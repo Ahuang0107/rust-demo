@@ -1,3 +1,3 @@
-import {hello} from "wgpu-wasm-demo";
+import {run} from "wgpu-wasm-demo";
 
-hello("elase");
+run();
