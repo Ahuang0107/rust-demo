@@ -2,3 +2,5 @@
 /.idea
 Cargo.lock
 /pkg
+**/node_modules
+**/package-lock.json

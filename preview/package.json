@@ -1,0 +1,17 @@
+{
+  "name": "rust-wasm-demo-preview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "preview": "vite --config vite.config.ts --port=25050"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0",
+    "vite-plugin-top-level-await": "^1.2.2",
+    "vite-plugin-wasm": "^3.1.0"
+  },
+  "dependencies": {
+    "rust-wasm-demo": "file:../pkg"
+  }
+}
