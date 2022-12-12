@@ -1,3 +1,3 @@
-import {hello} from "rust-wasm-demo";
+import {hello} from "wgpu-wasm-demo";
 
 hello("elase");

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "preview": "vite --config vite.config.ts --port=25050"
+    "preview": "vite --config vite.config.ts --port=25050",
+    "benchmark": "vite ./benchmark --config vite.config.ts --port=25051"
   },
   "devDependencies": {
     "vite": "^4.0.0",
@@ -12,6 +13,6 @@
     "vite-plugin-wasm": "^3.1.0"
   },
   "dependencies": {
-    "rust-wasm-demo": "file:../pkg"
+    "wgpu-wasm-demo": "file:../pkg"
   }
 }
