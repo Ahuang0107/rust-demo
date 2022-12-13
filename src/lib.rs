@@ -1,68 +1,36 @@
 use wasm_bindgen::prelude::*;
-use wgpu::util::DeviceExt;
+use wasm_bindgen::JsCast;
 
 mod context;
-mod dom;
 
 #[wasm_bindgen]
-pub struct Canvas {
-    dom: web_sys::HtmlCanvasElement,
+pub struct Runtime {
     context: context::Context,
 }
 
 #[wasm_bindgen]
-impl Canvas {
-    pub async fn new() -> Self {
+impl Runtime {
+    pub async fn new(foreign: web_sys::Element) -> Self {
         std::panic::set_hook(Box::new(console_error_panic_hook::hook));
-        let dom = dom::get_or_create_canvas("wasm-example");
-        let context = context::Context::try_new(&dom).await.unwrap();
-        Self { dom, context }
+        let document: web_sys::Document = web_sys::window().and_then(|w| w.document()).unwrap();
+        let canvas: web_sys::HtmlCanvasElement = document
+            .create_element("canvas")
+            .expect("fail to create <canvas>")
+            .unchecked_into::<web_sys::HtmlCanvasElement>();
+        let rect = foreign.get_bounding_client_rect();
+        // TODO 现在又一个问题就是画布绘制的内容会被拉伸，这个问题具体看nbody-wasm-sim是如何解决的
+        canvas
+            .set_attribute("width", rect.width().to_string().as_str())
+            .unwrap();
+        canvas
+            .set_attribute("height", rect.height().to_string().as_str())
+            .unwrap();
+        foreign.append_child(&canvas).ok();
+
+        let context = context::Context::try_new(&canvas).await.unwrap();
+        Self { context }
     }
-    pub fn run(&mut self, x_offset: f32, y_offset: f32) {
-        let left_top = (x_offset, y_offset);
-        let vertices: &[context::Vertex] = &[
-            context::Vertex {
-                position: [-0.1 + left_top.0, 0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // A
-            context::Vertex {
-                position: [-0.1 + left_top.0, -0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // B
-            context::Vertex {
-                position: [0.1 + left_top.0, -0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // C
-            context::Vertex {
-                position: [0.1 + left_top.0, 0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // D
-        ];
-
-        let indices: &[u16] = &[0, 1, 3, 1, 2, 3];
-
-        let vertex_buffer =
-            self.context
-                .device
-                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                    label: Some("Vertex Buffer"),
-                    contents: bytemuck::cast_slice(vertices),
-                    usage: wgpu::BufferUsages::VERTEX,
-                });
-        let index_buffer =
-            self.context
-                .device
-                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                    label: Some("Index Buffer"),
-                    contents: bytemuck::cast_slice(indices),
-                    usage: wgpu::BufferUsages::INDEX,
-                });
-        let num_indices = indices.len() as u32;
-        // let start = instant::Instant::now();
-        self.context
-            .render(vertex_buffer, index_buffer, num_indices)
-            .expect("TODO: panic message");
-        // let end = instant::Instant::now().duration_since(start).as_millis();
-        // gloo_console::log!(format!("render cost: {}", end))
+    pub fn render(mut self) {
+        self.context.render();
     }
 }

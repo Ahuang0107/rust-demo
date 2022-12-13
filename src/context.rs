@@ -1,3 +1,5 @@
+use wgpu::util::DeviceExt;
+
 pub struct Context {
     surface: wgpu::Surface,
     pub device: wgpu::Device,
@@ -41,7 +43,7 @@ impl Context {
             format: surface.get_supported_formats(&adapter)[0],
             width,
             height,
-            present_mode: wgpu::PresentMode::Fifo,
+            present_mode: wgpu::PresentMode::AutoNoVsync,
             alpha_mode: wgpu::CompositeAlphaMode::Auto,
         };
 
@@ -167,7 +169,7 @@ impl Context {
         }
     }
 
-    pub fn render(
+    pub fn render_rect(
         &mut self,
         vertex_buffer: wgpu::Buffer,
         index_buffer: wgpu::Buffer,
@@ -212,6 +214,129 @@ impl Context {
         self.queue.submit(std::iter::once(encoder.finish()));
         output.present();
 
+        Ok(())
+    }
+    pub fn render_line(
+        &mut self,
+        vertex_buffer: wgpu::Buffer,
+        index_buffer: wgpu::Buffer,
+        num_indices: u32,
+    ) -> anyhow::Result<(), wgpu::SurfaceError> {
+        let output = self.surface.get_current_texture()?;
+        let view = output
+            .texture
+            .create_view(&wgpu::TextureViewDescriptor::default());
+
+        let mut encoder = self
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("Render Encoder"),
+            });
+
+        {
+            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("Render Pass"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: &view,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color {
+                            r: 0.1,
+                            g: 0.2,
+                            b: 0.3,
+                            a: 1.0,
+                        }),
+                        store: true,
+                    },
+                })],
+                depth_stencil_attachment: None,
+            });
+
+            render_pass.set_pipeline(&self.line_render_pipeline);
+            render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+            render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+            render_pass.draw_indexed(0..num_indices, 0, 0..1);
+        }
+
+        self.queue.submit(std::iter::once(encoder.finish()));
+        output.present();
+
+        Ok(())
+    }
+
+    pub fn render(&mut self) -> anyhow::Result<()> {
+        // 根据时间得到一个(-0.5-0.5)之间的值
+        let now = instant::now();
+        let now_random = ((now % 10f64) / 10f64) as f32 - 0.5;
+        let left_top = (now_random, now_random);
+        // TODO 这里的position是齐次坐标系下的x,y,z
+        //  x,y在(-1.0,1.0)范围内
+        //  z在(0,1.0)范围内
+        //  具体看 https://www.w3.org/TR/webgpu/#coordinate-systems
+        //  需要具体看如何根据world transform和canvas size来判断最终得到的output position是什么
+        let vertices: &[Vertex] = &[
+            Vertex {
+                position: [-0.1 + left_top.0, 0.1 + left_top.1, 0.0],
+                color: [0.5, 0.0, 0.5],
+            }, // A
+            Vertex {
+                position: [-0.1 + left_top.0, -0.1 + left_top.1, 0.0],
+                color: [0.5, 0.0, 0.5],
+            }, // B
+            Vertex {
+                position: [0.1 + left_top.0, -0.1 + left_top.1, 0.0],
+                color: [0.5, 0.0, 0.5],
+            }, // C
+            Vertex {
+                position: [0.1 + left_top.0, 0.1 + left_top.1, 0.0],
+                color: [0.5, 0.0, 0.5],
+            }, // D
+        ];
+
+        let indices: &[u16] = &[0, 1, 3, 1, 2, 3];
+
+        let vertex_buffer = self
+            .device
+            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("Vertex Buffer"),
+                contents: bytemuck::cast_slice(vertices),
+                usage: wgpu::BufferUsages::VERTEX,
+            });
+        let index_buffer = self
+            .device
+            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("Index Buffer"),
+                contents: bytemuck::cast_slice(indices),
+                usage: wgpu::BufferUsages::INDEX,
+            });
+        let num_indices = indices.len() as u32;
+        // let start = instant::Instant::now();
+        self.render_rect(vertex_buffer, index_buffer, num_indices)
+            .expect("TODO: panic message");
+
+        // let indices: &[u16] = &[0, 1, 3, 2];
+        //
+        // let vertex_buffer =
+        //     self
+        //         .device
+        //         .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        //             label: Some("Vertex Buffer"),
+        //             contents: bytemuck::cast_slice(vertices),
+        //             usage: wgpu::BufferUsages::VERTEX,
+        //         });
+        // let index_buffer =
+        //     self
+        //         .device
+        //         .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+        //             label: Some("Index Buffer"),
+        //             contents: bytemuck::cast_slice(indices),
+        //             usage: wgpu::BufferUsages::INDEX,
+        //         });
+        // let num_indices = indices.len() as u32;
+        // self.context
+        //     .render_line(vertex_buffer, index_buffer, num_indices);
+        // let end = instant::Instant::now().duration_since(start).as_millis();
+        // gloo_console::log!(format!("render cost: {}", end))
         Ok(())
     }
 }
