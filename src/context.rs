@@ -5,6 +5,7 @@ pub struct Context {
     pub device: wgpu::Device,
     queue: wgpu::Queue,
     config: wgpu::SurfaceConfiguration,
+    size: crate::rectangle::Vec2,
     shader: wgpu::ShaderModule,
     triangle_render_pipeline: wgpu::RenderPipeline,
     line_render_pipeline: wgpu::RenderPipeline,
@@ -155,6 +156,7 @@ impl Context {
             device,
             queue,
             config,
+            size: crate::rectangle::Vec2::from(width as f32, height as f32),
             shader,
             triangle_render_pipeline,
             line_render_pipeline,
@@ -265,48 +267,26 @@ impl Context {
     }
 
     pub fn render(&mut self) -> anyhow::Result<()> {
-        // 根据时间得到一个(-0.5-0.5)之间的值
-        let now = instant::now();
-        let now_random = ((now % 10f64) / 10f64) as f32 - 0.5;
-        let left_top = (now_random, now_random);
         // TODO 这里的position是齐次坐标系下的x,y,z
         //  x,y在(-1.0,1.0)范围内
         //  z在(0,1.0)范围内
         //  具体看 https://www.w3.org/TR/webgpu/#coordinate-systems
         //  需要具体看如何根据world transform和canvas size来判断最终得到的output position是什么
-        let vertices: &[Vertex] = &[
-            Vertex {
-                position: [-0.1 + left_top.0, 0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // A
-            Vertex {
-                position: [-0.1 + left_top.0, -0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // B
-            Vertex {
-                position: [0.1 + left_top.0, -0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // C
-            Vertex {
-                position: [0.1 + left_top.0, 0.1 + left_top.1, 0.0],
-                color: [0.5, 0.0, 0.5],
-            }, // D
-        ];
-
-        let indices: &[u16] = &[0, 1, 3, 1, 2, 3];
+        let (vertices, indices) = crate::rectangle::Rectangle::square(50.0, 50.0, 50.0)
+            .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
 
         let vertex_buffer = self
             .device
             .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                 label: Some("Vertex Buffer"),
-                contents: bytemuck::cast_slice(vertices),
+                contents: bytemuck::cast_slice(&vertices),
                 usage: wgpu::BufferUsages::VERTEX,
             });
         let index_buffer = self
             .device
             .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                 label: Some("Index Buffer"),
-                contents: bytemuck::cast_slice(indices),
+                contents: bytemuck::cast_slice(&indices),
                 usage: wgpu::BufferUsages::INDEX,
             });
         let num_indices = indices.len() as u32;

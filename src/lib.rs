@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
 mod context;
+mod rectangle;
 
 #[wasm_bindgen]
 pub struct Runtime {
