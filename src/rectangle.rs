@@ -15,11 +15,14 @@ pub struct Rectangle {
 }
 
 impl Rectangle {
-    pub fn square(x: f32, y: f32, size: f32) -> Self {
+    pub fn from(x: f32, y: f32, width: f32, height: f32) -> Self {
         Self {
             position: Vec2::from(x, y),
-            size: Vec2::from(size, size),
+            size: Vec2::from(width, height),
         }
+    }
+    pub fn from_square(x: f32, y: f32, size: f32) -> Self {
+        Self::from(x, y, size, size)
     }
     fn left_top(&self) -> Vec2 {
         Vec2 {
@@ -50,40 +53,49 @@ impl Rectangle {
         screen_space_size: Vec2,
     ) -> ([crate::context::Vertex; 4], [u16; 6]) {
         let vertices: [crate::context::Vertex; 4] = [
-            crate::context::Vertex {
-                position: [
-                    (self.left_top().x / screen_space_size.x) * 2.0 - 1.0,
-                    1.0 - (self.left_top().y / screen_space_size.y) * 2.0,
-                    0.0,
-                ],
-                color: [0.5, 0.0, 0.5],
-            }, // A
-            crate::context::Vertex {
-                position: [
-                    (self.left_bottom().x / screen_space_size.x) * 2.0 - 1.0,
-                    1.0 - (self.left_bottom().y / screen_space_size.y) * 2.0,
-                    0.0,
-                ],
-                color: [0.5, 0.0, 0.5],
-            }, // B
-            crate::context::Vertex {
-                position: [
-                    (self.right_bottom().x / screen_space_size.x) * 2.0 - 1.0,
-                    1.0 - (self.right_bottom().y / screen_space_size.y) * 2.0,
-                    0.0,
-                ],
-                color: [0.5, 0.0, 0.5],
-            }, // C
-            crate::context::Vertex {
-                position: [
-                    (self.right_top().x / screen_space_size.x) * 2.0 - 1.0,
-                    1.0 - (self.right_top().y / screen_space_size.y) * 2.0,
-                    0.0,
-                ],
-                color: [0.5, 0.0, 0.5],
-            }, // D
+            crate::context::Vertex::mock(
+                (self.left_top().x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.left_top().y / screen_space_size.y) * 2.0,
+            ),
+            crate::context::Vertex::mock(
+                (self.left_bottom().x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.left_bottom().y / screen_space_size.y) * 2.0,
+            ),
+            crate::context::Vertex::mock(
+                (self.right_bottom().x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.right_bottom().y / screen_space_size.y) * 2.0,
+            ),
+            crate::context::Vertex::mock(
+                (self.right_top().x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.right_top().y / screen_space_size.y) * 2.0,
+            ),
         ];
         let indices: [u16; 6] = [0, 1, 3, 1, 2, 3];
+        (vertices, indices)
+    }
+}
+
+pub struct Line {
+    pub pos1: Vec2,
+    pub pos2: Vec2,
+}
+
+impl Line {
+    pub fn to_vertices_and_indices(
+        &self,
+        screen_space_size: Vec2,
+    ) -> ([crate::context::Vertex; 2], [u16; 2]) {
+        let vertices: [crate::context::Vertex; 2] = [
+            crate::context::Vertex::mock(
+                (self.pos1.x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.pos1.y / screen_space_size.y) * 2.0,
+            ),
+            crate::context::Vertex::mock(
+                (self.pos2.x / screen_space_size.x) * 2.0 - 1.0,
+                1.0 - (self.pos2.y / screen_space_size.y) * 2.0,
+            ),
+        ];
+        let indices: [u16; 2] = [0, 1];
         (vertices, indices)
     }
 }

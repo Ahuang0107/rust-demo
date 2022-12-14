@@ -171,108 +171,49 @@ impl Context {
         }
     }
 
-    pub fn render_rect(
-        &mut self,
-        vertex_buffer: wgpu::Buffer,
-        index_buffer: wgpu::Buffer,
-        num_indices: u32,
-    ) -> anyhow::Result<(), wgpu::SurfaceError> {
-        let output = self.surface.get_current_texture()?;
-        let view = output
-            .texture
-            .create_view(&wgpu::TextureViewDescriptor::default());
-
-        let mut encoder = self
-            .device
-            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("Render Encoder"),
-            });
-
-        {
-            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("Render Pass"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.1,
-                            g: 0.2,
-                            b: 0.3,
-                            a: 1.0,
-                        }),
-                        store: true,
-                    },
-                })],
-                depth_stencil_attachment: None,
-            });
-
-            render_pass.set_pipeline(&self.triangle_render_pipeline);
-            render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
-            render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-            render_pass.draw_indexed(0..num_indices, 0, 0..1);
-        }
-
-        self.queue.submit(std::iter::once(encoder.finish()));
-        output.present();
-
-        Ok(())
-    }
-    pub fn render_line(
-        &mut self,
-        vertex_buffer: wgpu::Buffer,
-        index_buffer: wgpu::Buffer,
-        num_indices: u32,
-    ) -> anyhow::Result<(), wgpu::SurfaceError> {
-        let output = self.surface.get_current_texture()?;
-        let view = output
-            .texture
-            .create_view(&wgpu::TextureViewDescriptor::default());
-
-        let mut encoder = self
-            .device
-            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("Render Encoder"),
-            });
-
-        {
-            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                label: Some("Render Pass"),
-                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                    view: &view,
-                    resolve_target: None,
-                    ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(wgpu::Color {
-                            r: 0.1,
-                            g: 0.2,
-                            b: 0.3,
-                            a: 1.0,
-                        }),
-                        store: true,
-                    },
-                })],
-                depth_stencil_attachment: None,
-            });
-
-            render_pass.set_pipeline(&self.line_render_pipeline);
-            render_pass.set_vertex_buffer(0, vertex_buffer.slice(..));
-            render_pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
-            render_pass.draw_indexed(0..num_indices, 0, 0..1);
-        }
-
-        self.queue.submit(std::iter::once(encoder.finish()));
-        output.present();
-
-        Ok(())
-    }
-
     pub fn render(&mut self) -> anyhow::Result<()> {
+        let output = self.surface.get_current_texture()?;
+        let view = output
+            .texture
+            .create_view(&wgpu::TextureViewDescriptor::default());
+
+        let mut encoder = self
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("Render Encoder"),
+            });
         // TODO 这里的position是齐次坐标系下的x,y,z
         //  x,y在(-1.0,1.0)范围内
         //  z在(0,1.0)范围内
         //  具体看 https://www.w3.org/TR/webgpu/#coordinate-systems
         //  需要具体看如何根据world transform和canvas size来判断最终得到的output position是什么
-        let (vertices, indices) = crate::rectangle::Rectangle::square(50.0, 50.0, 50.0)
+        // 使用矩形模拟直线的数据 todo 生成比1细的就会有问题
+        // let (vertices, indices) = crate::rectangle::Rectangle::from(50.0, 50.0, 1.0, 100.0)
+        //     .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
+        // 生成直线的数据
+        let (line_vertices, line_indices) = crate::rectangle::Line {
+            pos1: crate::rectangle::Vec2::from(50.0, 100.0),
+            pos2: crate::rectangle::Vec2::from(150.0, 100.0),
+        }
+        .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
+
+        let line_vertex_buffer =
+            self.device
+                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                    label: Some("Vertex Buffer"),
+                    contents: bytemuck::cast_slice(&line_vertices),
+                    usage: wgpu::BufferUsages::VERTEX,
+                });
+        let line_index_buffer = self
+            .device
+            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
+                label: Some("Index Buffer"),
+                contents: bytemuck::cast_slice(&line_indices),
+                usage: wgpu::BufferUsages::INDEX,
+            });
+        let line_num_indices = line_indices.len() as u32;
+        // 生成正方形的数据
+        let (vertices, indices) = crate::rectangle::Rectangle::from_square(250.0, 250.0, 50.0)
             .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
 
         let vertex_buffer = self
@@ -290,33 +231,34 @@ impl Context {
                 usage: wgpu::BufferUsages::INDEX,
             });
         let num_indices = indices.len() as u32;
-        // let start = instant::Instant::now();
-        self.render_rect(vertex_buffer, index_buffer, num_indices)
-            .expect("TODO: panic message");
 
-        // let indices: &[u16] = &[0, 1, 3, 2];
-        //
-        // let vertex_buffer =
-        //     self
-        //         .device
-        //         .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-        //             label: Some("Vertex Buffer"),
-        //             contents: bytemuck::cast_slice(vertices),
-        //             usage: wgpu::BufferUsages::VERTEX,
-        //         });
-        // let index_buffer =
-        //     self
-        //         .device
-        //         .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-        //             label: Some("Index Buffer"),
-        //             contents: bytemuck::cast_slice(indices),
-        //             usage: wgpu::BufferUsages::INDEX,
-        //         });
-        // let num_indices = indices.len() as u32;
-        // self.context
-        //     .render_line(vertex_buffer, index_buffer, num_indices);
-        // let end = instant::Instant::now().duration_since(start).as_millis();
-        // gloo_console::log!(format!("render cost: {}", end))
+        {
+            let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("Render Pass"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: &view,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        load: wgpu::LoadOp::Clear(wgpu::Color::TRANSPARENT),
+                        store: true,
+                    },
+                })],
+                depth_stencil_attachment: None,
+            });
+            pass.set_pipeline(&self.line_render_pipeline);
+            pass.set_vertex_buffer(0, line_vertex_buffer.slice(..));
+            pass.set_index_buffer(line_index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+            pass.draw_indexed(0..line_num_indices, 0, 0..1);
+
+            pass.set_pipeline(&self.triangle_render_pipeline);
+            pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+            pass.set_index_buffer(index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+            pass.draw_indexed(0..num_indices, 0, 0..1);
+        }
+
+        self.queue.submit(std::iter::once(encoder.finish()));
+        output.present();
+
         Ok(())
     }
 }
@@ -345,6 +287,12 @@ impl Vertex {
                     format: wgpu::VertexFormat::Float32x3,
                 },
             ],
+        }
+    }
+    pub fn mock(x: f32, y: f32) -> Self {
+        Self {
+            position: [x, y, 0.0],
+            color: [0.0, 0.0, 0.0],
         }
     }
 }
