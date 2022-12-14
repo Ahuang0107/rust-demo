@@ -9,6 +9,7 @@ pub struct Context {
     shader: wgpu::ShaderModule,
     triangle_render_pipeline: wgpu::RenderPipeline,
     line_render_pipeline: wgpu::RenderPipeline,
+    glyph_brush: wgpu_glyph::GlyphBrush<()>,
 }
 
 impl Context {
@@ -38,10 +39,12 @@ impl Context {
             )
             .await?;
 
+        let render_format = surface.get_supported_formats(&adapter)[0];
+
         let (width, height) = (canvas.width(), canvas.height());
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: surface.get_supported_formats(&adapter)[0],
+            format: render_format,
             width,
             height,
             present_mode: wgpu::PresentMode::AutoNoVsync,
@@ -89,7 +92,7 @@ impl Context {
                     front_face: wgpu::FrontFace::Ccw,
                     cull_mode: Some(wgpu::Face::Back),
                     // Setting this to anything other than Fill requires Features::POLYGON_MODE_LINE
-                    // or Features::POLYGON_MODE_POINT
+                    // or Features::POLYGON_MODE_POINT, which is native only
                     polygon_mode: wgpu::PolygonMode::Fill,
                     // Requires Features::DEPTH_CLIP_CONTROL
                     unclipped_depth: false,
@@ -151,6 +154,12 @@ impl Context {
             multiview: None,
         });
 
+        let inconsolata =
+            wgpu_glyph::ab_glyph::FontArc::try_from_slice(include_bytes!("MSYHMONO.ttf"))?;
+
+        let glyph_brush =
+            wgpu_glyph::GlyphBrushBuilder::using_font(inconsolata).build(&device, render_format);
+
         Ok(Self {
             surface,
             device,
@@ -160,15 +169,8 @@ impl Context {
             shader,
             triangle_render_pipeline,
             line_render_pipeline,
+            glyph_brush,
         })
-    }
-
-    pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
-        if new_size.width > 0 && new_size.height > 0 {
-            self.config.width = new_size.width;
-            self.config.height = new_size.height;
-            self.surface.configure(&self.device, &self.config);
-        }
     }
 
     pub fn render(&mut self) -> anyhow::Result<()> {
@@ -187,28 +189,33 @@ impl Context {
         //  z在(0,1.0)范围内
         //  具体看 https://www.w3.org/TR/webgpu/#coordinate-systems
         //  需要具体看如何根据world transform和canvas size来判断最终得到的output position是什么
-        // 使用矩形模拟直线的数据 todo 生成比1细的就会有问题
-        // let (vertices, indices) = crate::rectangle::Rectangle::from(50.0, 50.0, 1.0, 100.0)
-        //     .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
         // 生成直线的数据
-        let (line_vertices, line_indices) = crate::rectangle::Line {
-            pos1: crate::rectangle::Vec2::from(50.0, 100.0),
-            pos2: crate::rectangle::Vec2::from(150.0, 100.0),
+        // let (line_vertices, line_indices) = crate::rectangle::Line {
+        //     pos1: crate::rectangle::Vec2::from(32.0, 0.0),
+        //     pos2: crate::rectangle::Vec2::from(32.0, self.size.y),
+        // }
+        // .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
+        let mut lines = crate::rectangle::Lines::new();
+        for xi in 0..40 {
+            lines.lines.push(crate::rectangle::Line {
+                pos1: crate::rectangle::Vec2::from(xi as f32 * 32.0, 0.0),
+                pos2: crate::rectangle::Vec2::from(xi as f32 * 32.0, self.size.y),
+            });
         }
-        .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
-
+        let (line_vertices, line_indices) =
+            lines.to_vertices_and_indices(&crate::rectangle::Vec2::from(self.size.x, self.size.y));
         let line_vertex_buffer =
             self.device
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                     label: Some("Vertex Buffer"),
-                    contents: bytemuck::cast_slice(&line_vertices),
+                    contents: bytemuck::cast_slice(&line_vertices[0..]),
                     usage: wgpu::BufferUsages::VERTEX,
                 });
         let line_index_buffer = self
             .device
             .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                 label: Some("Index Buffer"),
-                contents: bytemuck::cast_slice(&line_indices),
+                contents: bytemuck::cast_slice(&line_indices[0..]),
                 usage: wgpu::BufferUsages::INDEX,
             });
         let line_num_indices = line_indices.len() as u32;
@@ -256,8 +263,33 @@ impl Context {
             pass.draw_indexed(0..num_indices, 0, 0..1);
         }
 
+        let mut staging_belt = wgpu::util::StagingBelt::new(1024);
+        self.glyph_brush.queue(wgpu_glyph::Section {
+            screen_position: (30.0, 90.0),
+            bounds: (self.size.x, self.size.y),
+            text: vec![wgpu_glyph::Text::new(
+                "Hello 中文繁體!add 更多文字内容检查文字渲染是否正常",
+            )
+            .with_color([0.0, 0.0, 0.0, 1.0])
+            .with_scale(12.0)],
+            ..wgpu_glyph::Section::default()
+        });
+        self.glyph_brush
+            .draw_queued(
+                &self.device,
+                &mut staging_belt,
+                &mut encoder,
+                &view,
+                self.size.x as u32,
+                self.size.y as u32,
+            )
+            .expect("Draw queued");
+        staging_belt.finish();
+
         self.queue.submit(std::iter::once(encoder.finish()));
         output.present();
+
+        staging_belt.recall();
 
         Ok(())
     }

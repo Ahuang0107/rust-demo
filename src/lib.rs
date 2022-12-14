@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
 mod context;
+mod model;
 mod rectangle;
 
 #[wasm_bindgen]
@@ -31,6 +32,7 @@ impl Runtime {
         let context = context::Context::try_new(&canvas).await.unwrap();
         Self { context }
     }
+    pub fn push_data(&self) {}
     pub fn render(mut self) {
         self.context.render();
     }

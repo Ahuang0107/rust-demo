@@ -83,7 +83,7 @@ pub struct Line {
 impl Line {
     pub fn to_vertices_and_indices(
         &self,
-        screen_space_size: Vec2,
+        screen_space_size: &Vec2,
     ) -> ([crate::context::Vertex; 2], [u16; 2]) {
         let vertices: [crate::context::Vertex; 2] = [
             crate::context::Vertex::mock(
@@ -97,5 +97,30 @@ impl Line {
         ];
         let indices: [u16; 2] = [0, 1];
         (vertices, indices)
+    }
+}
+
+pub struct Lines {
+    pub lines: Vec<Line>,
+}
+
+impl Lines {
+    pub fn new() -> Self {
+        Self { lines: vec![] }
+    }
+    pub fn to_vertices_and_indices(
+        &self,
+        screen_space_size: &Vec2,
+    ) -> (Vec<crate::context::Vertex>, Vec<u16>) {
+        let mut line_vertices: Vec<crate::context::Vertex> = vec![];
+        let mut line_indices: Vec<u16> = vec![];
+        self.lines.iter().for_each(|line| {
+            let (vertices, indices) = line.to_vertices_and_indices(&screen_space_size);
+            vertices.into_iter().for_each(|v| line_vertices.push(v));
+            indices
+                .into_iter()
+                .for_each(|_| line_indices.push(line_indices.len() as u16));
+        });
+        (line_vertices, line_indices)
     }
 }
