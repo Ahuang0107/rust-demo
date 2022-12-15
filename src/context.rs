@@ -154,8 +154,9 @@ impl Context {
             multiview: None,
         });
 
-        let inconsolata =
-            wgpu_glyph::ab_glyph::FontArc::try_from_slice(include_bytes!("MSYHMONO.ttf"))?;
+        let inconsolata = wgpu_glyph::ab_glyph::FontArc::try_from_slice(include_bytes!(
+            "Inconsolata-Regular.ttf"
+        ))?;
 
         let glyph_brush =
             wgpu_glyph::GlyphBrushBuilder::using_font(inconsolata).build(&device, render_format);
@@ -171,6 +172,16 @@ impl Context {
             line_render_pipeline,
             glyph_brush,
         })
+    }
+
+    pub fn render_with_cost(&mut self) -> anyhow::Result<()> {
+        let start = instant::Instant::now();
+        let result = self.render();
+        gloo_console::log!(format!(
+            "cost: {}ms",
+            instant::Instant::now().duration_since(start).as_millis()
+        ));
+        result
     }
 
     pub fn render(&mut self) -> anyhow::Result<()> {
@@ -189,39 +200,31 @@ impl Context {
         //  z在(0,1.0)范围内
         //  具体看 https://www.w3.org/TR/webgpu/#coordinate-systems
         //  需要具体看如何根据world transform和canvas size来判断最终得到的output position是什么
-        // 生成直线的数据
-        // let (line_vertices, line_indices) = crate::rectangle::Line {
-        //     pos1: crate::rectangle::Vec2::from(32.0, 0.0),
-        //     pos2: crate::rectangle::Vec2::from(32.0, self.size.y),
-        // }
-        // .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
         let mut lines = crate::rectangle::Lines::new();
-        for xi in 0..40 {
+        for x in (0..self.size.x as u32).step_by(32) {
             lines.lines.push(crate::rectangle::Line {
-                pos1: crate::rectangle::Vec2::from(xi as f32 * 32.0, 0.0),
-                pos2: crate::rectangle::Vec2::from(xi as f32 * 32.0, self.size.y),
+                pos1: crate::rectangle::Vec2::from(x as f32, 0.0),
+                pos2: crate::rectangle::Vec2::from(x as f32, self.size.y),
             });
         }
-        let (line_vertices, line_indices) =
-            lines.to_vertices_and_indices(&crate::rectangle::Vec2::from(self.size.x, self.size.y));
-        let line_vertex_buffer =
-            self.device
-                .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                    label: Some("Vertex Buffer"),
-                    contents: bytemuck::cast_slice(&line_vertices[0..]),
-                    usage: wgpu::BufferUsages::VERTEX,
-                });
-        let line_index_buffer = self
-            .device
-            .create_buffer_init(&wgpu::util::BufferInitDescriptor {
-                label: Some("Index Buffer"),
-                contents: bytemuck::cast_slice(&line_indices[0..]),
-                usage: wgpu::BufferUsages::INDEX,
+        for y in (0..self.size.y as u32).step_by(24) {
+            lines.lines.push(crate::rectangle::Line {
+                pos1: crate::rectangle::Vec2::from(0.0, y as f32),
+                pos2: crate::rectangle::Vec2::from(self.size.x, y as f32),
             });
-        let line_num_indices = line_indices.len() as u32;
+        }
+        let (line_vertex_buffer, line_index_buffer, line_num_indices) = lines.to_buffers_info(
+            &self.device,
+            &crate::rectangle::Vec2::from(self.size.x, self.size.y),
+            &crate::color::RgbColor::RO,
+        );
+
         // 生成正方形的数据
         let (vertices, indices) = crate::rectangle::Rectangle::from_square(250.0, 250.0, 50.0)
-            .to_vertices_and_indices(crate::rectangle::Vec2::from(self.size.x, self.size.y));
+            .to_vertices_and_indices(
+                crate::rectangle::Vec2::from(self.size.x, self.size.y),
+                &crate::color::RgbColor::BLACK,
+            );
 
         let vertex_buffer = self
             .device
@@ -264,14 +267,15 @@ impl Context {
         }
 
         let mut staging_belt = wgpu::util::StagingBelt::new(1024);
+        // todo 可能在高分辨率下文字的渲染有问题，macbook上显示的反而要模糊
         self.glyph_brush.queue(wgpu_glyph::Section {
             screen_position: (30.0, 90.0),
-            bounds: (self.size.x, self.size.y),
-            text: vec![wgpu_glyph::Text::new(
-                "Hello 中文繁體!add 更多文字内容检查文字渲染是否正常",
-            )
-            .with_color([0.0, 0.0, 0.0, 1.0])
-            .with_scale(12.0)],
+            bounds: (300.0, 100.0),
+            text: vec![
+                wgpu_glyph::Text::new("Sphinx Of Black Quartz, Judge My Vow.")
+                    .with_color(crate::color::RgbColor::RO.to_rgba_slice())
+                    .with_scale(14.0),
+            ],
             ..wgpu_glyph::Section::default()
         });
         self.glyph_brush
@@ -321,10 +325,10 @@ impl Vertex {
             ],
         }
     }
-    pub fn mock(x: f32, y: f32) -> Self {
+    pub fn mock(x: f32, y: f32, color: &crate::color::RgbColor) -> Self {
         Self {
             position: [x, y, 0.0],
-            color: [0.0, 0.0, 0.0],
+            color: color.to_rgb_slice(),
         }
     }
 }
