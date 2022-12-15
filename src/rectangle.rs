@@ -129,7 +129,6 @@ impl Lines {
             vertices.into_iter().for_each(|v| {
                 line_vertices.push(v);
                 line_indices.push(line_indices.len() as u16);
-                line_indices.push(line_indices.len() as u16)
             });
         });
         (line_vertices, line_indices)
