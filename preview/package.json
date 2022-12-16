@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "preview": "vite --config vite.config.ts --port=25050",
-    "benchmark": "vite ./benchmark --config vite.config.ts --port=25051"
+    "preview": "vite --config vite.config.ts --port=25050 --host",
+    "webgpu": "vite ./webgpu --port=25052 --host",
+    "benchmark": "vite ./benchmark --config vite.config.ts --port=25051 --host"
   },
   "devDependencies": {
     "vite": "^4.0.0",
