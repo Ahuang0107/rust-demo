@@ -6,11 +6,13 @@ pub struct RedisInfo {
 }
 
 impl RedisInfo {
-    pub fn new() -> Self {
-        let connection = redis::Client::open("redis://127.0.0.1/")
+    pub fn new(redis_url: &str) -> Self {
+        log::info!("try to connect to {}", redis_url);
+        let connection = redis::Client::open(redis_url)
             .unwrap()
             .get_connection()
             .unwrap();
+        log::info!("connected");
         Self {
             connection,
             raw_memory: "".to_string(),
