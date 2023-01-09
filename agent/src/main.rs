@@ -18,6 +18,27 @@ use crate::redis_metrics::RedisMetrics;
 mod redis_info;
 mod redis_metrics;
 
+#[macro_export]
+macro_rules! fatal {
+    () => {
+        log::error!("config panic");
+        panic!()
+    };
+    ($msg:expr) => {
+        log::error!($msg);
+        panic!()
+    };
+    ($msg:expr,) => {
+        log::error!($msg);
+        panic!()
+    };
+    ($fmt:expr, $($arg:tt)+) => {
+        let msg = format!($fmt, $($arg)+);
+        log::error!("{}", &msg);
+        panic!()
+    };
+}
+
 // 主要目的是获得压测期间所有服务器和具体中间件的指标变化
 fn main() {
     dotenv().ok();
@@ -40,20 +61,30 @@ fn main() {
 
     log4rs::init_config(config).unwrap();
 
-    let (_, redis_url) = env::vars().find(|(key, _)| key == "REDIS_URL").unwrap();
+    let (_, redis_url) = env::vars()
+        .find(|(key, _)| key == "REDIS_URL")
+        .unwrap_or_else(|| {
+            fatal!("unable to read REDIS_URL");
+        });
 
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let mut sys_info = System::new_all();
     let mut redis_info = RedisInfo::new(redis_url.as_str());
 
     for stream in listener.incoming() {
-        let mut stream = stream.unwrap();
+        let mut stream = stream.unwrap_or_else(|_| {
+            fatal!("unable to get stream");
+        });
 
         let buf_reader = BufReader::new(&mut stream);
         #[allow(unused)]
         let http_request: Vec<_> = buf_reader
             .lines()
-            .map(|result| result.unwrap())
+            .map(|result| {
+                result.unwrap_or_else(|_| {
+                    fatal!("unable to get stream lines");
+                })
+            })
             .take_while(|line| !line.is_empty())
             .collect();
 
@@ -63,7 +94,15 @@ fn main() {
         let redis_metrics = RedisMetrics::metrics(&sys_info, &redis_info);
 
         let mut response = "HTTP/1.1 200 OK\r\n\r\n".to_string();
-        response = response.add(serde_json::to_string(&redis_metrics).unwrap().as_str());
-        stream.write_all(response.as_bytes()).unwrap();
+        response = response.add(
+            serde_json::to_string(&redis_metrics)
+                .unwrap_or_else(|_| {
+                    fatal!("unable to serde {:?} to string", redis_metrics);
+                })
+                .as_str(),
+        );
+        stream.write_all(response.as_bytes()).unwrap_or_else(|_| {
+            fatal!("unable to write response");
+        });
     }
 }

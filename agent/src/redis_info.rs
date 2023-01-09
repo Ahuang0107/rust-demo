@@ -1,3 +1,5 @@
+use crate::fatal;
+
 pub struct RedisInfo {
     connection: redis::Connection,
     raw_memory: String,
@@ -9,9 +11,13 @@ impl RedisInfo {
     pub fn new(redis_url: &str) -> Self {
         log::info!("try to connect to {}", redis_url);
         let connection = redis::Client::open(redis_url)
-            .unwrap()
+            .unwrap_or_else(|_| {
+                fatal!("unable to open redis client");
+            })
             .get_connection()
-            .unwrap();
+            .unwrap_or_else(|_| {
+                fatal!("unable to get redis connection");
+            });
         log::info!("connected");
         Self {
             connection,
@@ -24,15 +30,21 @@ impl RedisInfo {
         self.raw_memory = redis::cmd("info")
             .arg("memory")
             .query(&mut self.connection)
-            .unwrap();
+            .unwrap_or_else(|_| {
+                fatal!("unable to query memory");
+            });
         self.raw_stats = redis::cmd("info")
             .arg("stats")
             .query(&mut self.connection)
-            .unwrap();
+            .unwrap_or_else(|_| {
+                fatal!("unable to query stats");
+            });
         self.raw_clients = redis::cmd("info")
             .arg("clients")
             .query(&mut self.connection)
-            .unwrap();
+            .unwrap_or_else(|_| {
+                fatal!("unable to query clients");
+            });
     }
     pub fn get_metrics_arg(&self, arg: RedisInfoType) -> Option<u64> {
         match arg {
@@ -65,8 +77,12 @@ fn get_redis_info(query: &String, arg: &str) -> Option<u64> {
     let mut result: Option<u64> = None;
     query.lines().for_each(|line| {
         if line.contains((arg.to_string() + ":").as_str()) {
-            let temp = line.split(':').last().unwrap();
-            result = Some(temp.parse::<u64>().unwrap())
+            let temp = line.split(':').last().unwrap_or_else(|| {
+                fatal!("unable to get split {} with ':'", line);
+            });
+            result = Some(temp.parse::<u64>().unwrap_or_else(|_| {
+                fatal!("unable to parse {} to u64", temp);
+            }))
         }
     });
     result
