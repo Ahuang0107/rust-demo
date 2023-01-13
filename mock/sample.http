@@ -1,0 +1,5 @@
+### WebSocket Sample
+WEBSOCKET ws://127.0.0.1:9055/ws
+Content-Type: text/plain
+
+sample data
