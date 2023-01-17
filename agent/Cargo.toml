@@ -6,6 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+tokio = { version = "1.0.0", default-features = false, features = ["io-std", "macros", "net", "rt-multi-thread", "time", "sync"] }
+tokio-tungstenite = "0.18.0"
+tungstenite = { version = "0.18.0", default-features = false }
 redis = "0.22.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1.0.86"
@@ -13,3 +17,4 @@ sysinfo = "0.27.2"
 dotenv = "0.15.0"
 log = "0.4.17"
 log4rs = "1.2.0"
+anyhow = "1.0.68"
