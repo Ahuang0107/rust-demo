@@ -1,27 +1,14 @@
 use std::net::SocketAddr;
 
-use dotenv::dotenv;
 use futures_util::{SinkExt, StreamExt};
+use sysinfo::{CpuExt, SystemExt};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::accept_async;
 use tungstenite::{Error, Message};
 
-use crate::log_config::log_config;
-use crate::metrics_list::MetricsList;
-
-mod fatal;
-mod log_config;
-mod metrics_list;
-mod redis_info;
-mod redis_metrics;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    dotenv().ok();
-    log_config();
-
     let listener = TcpListener::bind("127.0.0.1:7878").await?;
-
     while let Ok((stream, _)) = listener.accept().await {
         let peer = stream
             .peer_addr()
@@ -29,7 +16,6 @@ async fn main() -> anyhow::Result<()> {
 
         tokio::spawn(accept_connection(peer, stream));
     }
-
     Ok(())
 }
 
@@ -46,17 +32,22 @@ async fn handle_connection(peer: SocketAddr, stream: TcpStream) -> tungstenite::
     let mut ws_stream = accept_async(stream).await?;
     println!("{} enter", peer);
 
-    let mut metrics_list = MetricsList::new();
+    let mut sys = sysinfo::System::new_all();
 
     while let Some(msg) = ws_stream.next().await {
         let msg = msg?;
-        if let Some(_) = msg.into_text().ok() {
-            metrics_list.flush();
-            let redis_metrics = metrics_list.get_redis_metrics();
-            let response = serde_json::to_string(&redis_metrics).unwrap_or_else(|_| {
-                fatal!("unable to serde {:?} to string", redis_metrics);
-            });
-            ws_stream.send(Message::Text(response)).await?;
+        match msg {
+            Message::Text(_) => {
+                sys.refresh_cpu();
+                sys.refresh_memory();
+                let cu = sys.global_cpu_info().cpu_usage();
+                let mu = ((sys.used_memory() as f64) / (sys.total_memory() as f64)) * 100.0;
+                println!("{:.2},{:.2}", cu, mu);
+                ws_stream
+                    .send(Message::Text(String::from(format!("{:.2},{:.2}", cu, mu))))
+                    .await?;
+            }
+            _ => {}
         }
     }
 

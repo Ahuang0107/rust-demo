@@ -9,5 +9,5 @@ edition = "2021"
 futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
 tokio = { version = "1.0.0", default-features = false, features = ["io-std", "macros", "net", "rt-multi-thread", "time", "sync"] }
 tokio-tungstenite = "0.18.0"
-url = "2.0.0"
 anyhow = "1.0.68"
+dotenv = "0.15.0"
