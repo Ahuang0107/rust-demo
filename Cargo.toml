@@ -2,4 +2,5 @@
 members = [
     "agents/*",
     "monitor",
+    "visualizer",
 ]
