@@ -8,7 +8,9 @@ use tungstenite::{Error, Message};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:7878").await?;
+    // 服务端监听127.0.0.1，则客户端只能通过127.0.0.1连接，不能通过局域网ip或者外网ip连接
+    // 监听地址设置为0.0.0.0，这样本机、内网、外网都可以连接
+    let listener = TcpListener::bind("0.0.0.0:7878").await?;
     while let Ok((stream, _)) = listener.accept().await {
         let peer = stream
             .peer_addr()
