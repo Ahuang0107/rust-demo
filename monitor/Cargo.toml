@@ -7,8 +7,9 @@ edition = "2021"
 
 [dependencies]
 futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
-tokio = { version = "1.0.0", default-features = false, features = ["io-std", "macros", "net", "rt-multi-thread", "time", "sync"] }
+tokio = { version = "1.0.0", default-features = false, features = ["io-std", "macros", "net", "rt-multi-thread", "time", "sync", "fs"] }
 tokio-tungstenite = "0.18.0"
 anyhow = "1.0.68"
-dotenv = "0.15.0"
+serde = { version = "1.0.149", features = ["derive"] }
+serde_yaml = "0.9.14"
 chrono = "0.4.23"

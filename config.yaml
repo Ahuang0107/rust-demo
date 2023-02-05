@@ -1,0 +1,6 @@
+interval: 1
+targets:
+  - url: "ws://127.0.0.1:7878"
+    name: "agent1"
+  - url: "ws://127.0.0.1:7879"
+    name: "agent2"

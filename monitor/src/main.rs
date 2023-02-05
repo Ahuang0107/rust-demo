@@ -1,48 +1,81 @@
-use std::env;
+use std::fs::File;
 use std::io::Write;
+use std::net::TcpStream;
+use std::sync::{Arc, Mutex};
 
 use chrono::Local;
-use dotenv::dotenv;
-use futures_util::{SinkExt, StreamExt};
-use tokio_tungstenite::connect_async;
-use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::tungstenite::stream::MaybeTlsStream;
+use tokio_tungstenite::tungstenite::{connect, Message, WebSocket};
+
+type PeerMap = Arc<Mutex<Vec<MonitorInfo>>>;
+
+struct MonitorInfo {
+    ws_stream: WebSocket<MaybeTlsStream<TcpStream>>,
+    file: File,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+pub struct MonitorConfig {
+    interval: u64,
+    targets: Vec<TargetInfo>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+struct TargetInfo {
+    url: String,
+    name: String,
+}
+
+impl MonitorConfig {
+    pub async fn from_yaml(path: &str) -> anyhow::Result<Self> {
+        let content = tokio::fs::read_to_string(path).await?;
+        let config = serde_yaml::from_str::<Self>(&content)?;
+        Ok(config)
+    }
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    dotenv().ok();
-    let (_, url) = env::vars().find(|(key, _)| key == "URL").unwrap();
-    let (_, interval) = env::vars().find(|(key, _)| key == "INTERVAL").unwrap();
+    let config = MonitorConfig::from_yaml("./config.yaml").await?;
 
-    monitor_agent(&url, interval.parse::<u64>().unwrap()).await?;
+    let peers: PeerMap = Arc::new(Mutex::new(vec![]));
 
-    Ok(())
-}
-
-async fn monitor_agent(url: &str, interval: u64) -> anyhow::Result<()> {
-    let (mut ws_stream, _) = connect_async(url).await?;
-    ws_stream.send(Message::Text(String::new())).await?;
-
-    let now = Local::now();
-    let filename = format!("metrics-{}.csv", now.format("%Y-%m-%d-%H-%M-%S"));
-    let mut file = std::fs::OpenOptions::new()
-        .create(true)
-        .write(true)
-        .append(true)
-        .open(filename)
-        .unwrap();
-    writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
-
-    while let Some(msg) = ws_stream.next().await {
-        let msg = msg?;
-        match msg {
-            Message::Text(content) => {
-                println!("{}", content);
-                writeln!(&mut file, "{},{}", Local::now().timestamp(), content).unwrap();
-                std::thread::sleep(std::time::Duration::from_secs(interval));
-                ws_stream.send(Message::Text(String::new())).await?;
-            }
-            _ => {}
-        }
+    for target_info in config.targets {
+        let (ws_stream, _) = connect(&target_info.url)?;
+        let now = Local::now();
+        let filename = format!(
+            "metrics-{}-{}.csv",
+            target_info.name,
+            now.format("%Y-%m-%d-%H-%M-%S")
+        );
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .append(true)
+            .open(filename)
+            .unwrap();
+        writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
+        peers.lock().unwrap().push(MonitorInfo { ws_stream, file });
     }
-    Ok(())
+
+    for info in peers.lock().unwrap().iter_mut() {
+        info.ws_stream.write_message(Message::Text(String::new()))?;
+    }
+
+    loop {
+        for info in peers.lock().unwrap().iter_mut() {
+            if let Some(msg) = info.ws_stream.read_message().ok() {
+                match msg {
+                    Message::Text(content) => {
+                        println!("{}", content);
+                        writeln!(&mut info.file, "{},{}", Local::now().timestamp(), content)
+                            .unwrap();
+                        info.ws_stream.write_message(Message::Text(String::new()))?;
+                    }
+                    _ => {}
+                }
+            }
+        }
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 }
