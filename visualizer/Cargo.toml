@@ -7,3 +7,8 @@ edition = "2021"
 
 [dependencies]
 plotters = "0.3.4"
+chrono = "0.4.23"
+csv = "1.1.6"
+serde = { version = "1.0.149", features = ["derive"] }
+anyhow = "1.0.68"
+regex = "1.7.1"

@@ -1,6 +1,4 @@
-interval: 1
+interval: 10
 targets:
   - url: "ws://127.0.0.1:7878"
-    name: "agent1"
-  - url: "ws://127.0.0.1:7879"
-    name: "agent2"
+    name: "Application Server"
