@@ -46,9 +46,9 @@ async fn main() -> anyhow::Result<()> {
         if let Some((ws_stream, _)) = connect(&target_info.url).ok() {
             let now = Local::now();
             let filename = format!(
-                "./temp/metrics-{}-{}.csv",
+                "./temp/[Metrics][{}][{}].csv",
                 target_info.name,
-                now.format("%Y-%m-%d-%H-%M-%S")
+                now.format("%Y-%m-%d %H-%M-%S")
             );
             let mut file = std::fs::OpenOptions::new()
                 .create(true)
