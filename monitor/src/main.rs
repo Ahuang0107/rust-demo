@@ -41,21 +41,22 @@ async fn main() -> anyhow::Result<()> {
     let peers: PeerMap = Arc::new(Mutex::new(vec![]));
 
     for target_info in config.targets {
-        let (ws_stream, _) = connect(&target_info.url)?;
-        let now = Local::now();
-        let filename = format!(
-            "metrics-{}-{}.csv",
-            target_info.name,
-            now.format("%Y-%m-%d-%H-%M-%S")
-        );
-        let mut file = std::fs::OpenOptions::new()
-            .create(true)
-            .write(true)
-            .append(true)
-            .open(filename)
-            .unwrap();
-        writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
-        peers.lock().unwrap().push(MonitorInfo { ws_stream, file });
+        if let Some((ws_stream, _)) = connect(&target_info.url).ok() {
+            let now = Local::now();
+            let filename = format!(
+                "metrics-{}-{}.csv",
+                target_info.name,
+                now.format("%Y-%m-%d-%H-%M-%S")
+            );
+            let mut file = std::fs::OpenOptions::new()
+                .create(true)
+                .write(true)
+                .append(true)
+                .open(filename)
+                .unwrap();
+            writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
+            peers.lock().unwrap().push(MonitorInfo { ws_stream, file });
+        }
     }
 
     for info in peers.lock().unwrap().iter_mut() {
@@ -76,6 +77,6 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
         }
-        std::thread::sleep(std::time::Duration::from_secs(1));
+        std::thread::sleep(std::time::Duration::from_secs(config.interval));
     }
 }
