@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::Write;
 use std::net::TcpStream;
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 use chrono::Local;
@@ -13,6 +14,7 @@ type PeerMap = Arc<Mutex<Vec<MonitorInfo>>>;
 pub struct MonitorConfig {
     interval: u64,
     targets: Vec<TargetInfo>,
+    duration: Option<u64>,
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
@@ -33,6 +35,7 @@ struct MonitorInfo {
     name: String,
     ws_stream: WebSocket<MaybeTlsStream<TcpStream>>,
     file: File,
+    file_path: String,
 }
 
 #[tokio::main]
@@ -48,19 +51,20 @@ async fn main() -> anyhow::Result<()> {
             let filename = format!(
                 "./temp/[Metrics][{}][{}].csv",
                 target_info.name,
-                now.format("%Y-%m-%d %H-%M-%S")
+                now.format("%Y-%m-%dT%H-%M-%S")
             );
             let mut file = std::fs::OpenOptions::new()
                 .create(true)
                 .write(true)
                 .append(true)
-                .open(filename)
+                .open(filename.clone())
                 .unwrap();
             writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
             peers.lock().unwrap().push(MonitorInfo {
                 name: target_info.name,
                 ws_stream,
                 file,
+                file_path: filename,
             });
         }
     }
@@ -69,7 +73,10 @@ async fn main() -> anyhow::Result<()> {
         info.ws_stream.write_message(Message::Text(String::new()))?;
     }
 
-    loop {
+    let start = Local::now();
+    while Local::now().signed_duration_since(start).num_seconds()
+        < (config.duration.unwrap() as i64)
+    {
         for info in peers.lock().unwrap().iter_mut() {
             if let Some(msg) = info.ws_stream.read_message().ok() {
                 match msg {
@@ -85,4 +92,11 @@ async fn main() -> anyhow::Result<()> {
         }
         std::thread::sleep(std::time::Duration::from_secs(config.interval));
     }
+
+    for info in peers.lock().unwrap().iter_mut() {
+        let filename = Path::new(&info.file_path).file_name().unwrap();
+        visualizer::visualization(filename.to_str().unwrap().to_string(), &info.file_path)?;
+    }
+
+    Ok(())
 }

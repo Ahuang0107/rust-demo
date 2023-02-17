@@ -2,3 +2,4 @@ interval: 10
 targets:
   - url: "ws://127.0.0.1:7878"
     name: "Application Server"
+duration: 60

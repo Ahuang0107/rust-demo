@@ -13,3 +13,5 @@ anyhow = "1.0.68"
 serde = { version = "1.0.149", features = ["derive"] }
 serde_yaml = "0.9.14"
 chrono = "0.4.23"
+regex = "1.7.1"
+visualizer = { path = "../visualizer" }
