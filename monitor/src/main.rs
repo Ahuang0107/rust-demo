@@ -59,7 +59,11 @@ async fn main() -> anyhow::Result<()> {
                 .append(true)
                 .open(filename.clone())
                 .unwrap();
-            writeln!(&mut file, "timestamp,cpu_usage,memory_usage").unwrap();
+            writeln!(
+                &mut file,
+                "timestamp,cpu_usage,memory_usage,data_received_per_sec,data_sent_per_sec"
+            )
+            .unwrap();
             peers.lock().unwrap().push(MonitorInfo {
                 name: target_info.name,
                 ws_stream,
@@ -82,8 +86,29 @@ async fn main() -> anyhow::Result<()> {
                 match msg {
                     Message::Text(content) => {
                         let timestamp = Local::now().timestamp();
-                        println!("[{}] {}", info.name, content);
-                        writeln!(&mut info.file, "{},{}", timestamp, content).unwrap();
+                        let split = content.split(',').collect::<Vec<&str>>();
+                        let cpu_usage = split[0].parse::<f32>().unwrap();
+                        let mem_usage = split[1].parse::<f32>().unwrap();
+                        let data_received = split[2].parse::<u64>().unwrap();
+                        let data_sent = split[3].parse::<u64>().unwrap();
+                        let data_received_per_sec = data_received as f64 / config.interval as f64;
+                        let data_sent_per_sec = data_sent as f64 / config.interval as f64;
+                        println!("[{}] cpu usage: {:.2}%, mem usage: {:.2}%, data received/sec: {:.2} B, data sent/sec: {:.2} B",
+                                 info.name,
+                                 cpu_usage,
+                                 mem_usage,
+                                 data_received_per_sec,
+                                 data_sent_per_sec);
+                        writeln!(
+                            &mut info.file,
+                            "{},{},{},{},{}",
+                            timestamp,
+                            cpu_usage,
+                            mem_usage,
+                            data_received_per_sec,
+                            data_sent_per_sec
+                        )
+                        .unwrap();
                         info.ws_stream.write_message(Message::Text(String::new()))?;
                     }
                     _ => {}

@@ -6,6 +6,8 @@ struct MachineMetricsData {
     timestamp: i64,
     cpu_usage: f32,
     memory_usage: f32,
+    data_received_per_sec: f32,
+    data_sent_per_sec: f32,
 }
 
 pub fn visualization(name: String, file_path: &str) -> anyhow::Result<()> {
@@ -60,11 +62,15 @@ pub fn visualization(name: String, file_path: &str) -> anyhow::Result<()> {
 
     let mut cpu_usage_set: Vec<(f32, f32)> = vec![];
     let mut memory_usage_set: Vec<(f32, f32)> = vec![];
+    let mut data_received_per_sec_set: Vec<(f32, f32)> = vec![];
+    let mut data_sent_per_sec_set: Vec<(f32, f32)> = vec![];
 
     for data in dataset {
         let x = ((data.timestamp - start) as f32 / distance as f32) * 10.0;
         cpu_usage_set.push((x, data.cpu_usage));
         memory_usage_set.push((x, data.memory_usage));
+        data_received_per_sec_set.push((x, data.data_received_per_sec));
+        data_sent_per_sec_set.push((x, data.data_sent_per_sec));
     }
 
     // And we can draw something in the drawing area
