@@ -1,3 +1,4 @@
+use model::*;
 use std::error::Error;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -5,8 +6,8 @@ use std::path::Path;
 use zip::write::FileOptions;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    zip_dir("./assets/basic_excel", "./assets/basic_excel.xlsx")?;
-
+    // zip_dir("./assets/basic_excel", "./assets/basic_excel.xlsx")?;
+    // dbg!(ContentTypes {}.to_xml());
     Ok(())
 }
 
