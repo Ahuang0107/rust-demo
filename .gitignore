@@ -1,3 +1,7 @@
 /target
 /.idea
 Cargo.lock
+
+assets/**/\[trash\]
+assets/**/**.xlsx
+assets/**/**.zip
