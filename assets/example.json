@@ -1,0 +1,420 @@
+{
+ "frames": [
+  {
+   "filename": "example (Layer 3).aseprite",
+   "frame": {
+    "x": 272,
+    "y": 0,
+    "w": 260,
+    "h": 221
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 36,
+    "y": 75,
+    "w": 260,
+    "h": 221
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 6).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 272,
+    "h": 270
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 34,
+    "y": 13,
+    "w": 272,
+    "h": 270
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 7).aseprite",
+   "frame": {
+    "x": 429,
+    "y": 221,
+    "w": 20,
+    "h": 43
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 86,
+    "y": 213,
+    "w": 20,
+    "h": 43
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 4).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 270,
+    "w": 158,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 136,
+    "y": 168,
+    "w": 158,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 8).aseprite",
+   "frame": {
+    "x": 449,
+    "y": 221,
+    "w": 29,
+    "h": 26
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 193,
+    "y": 213,
+    "w": 29,
+    "h": 26
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 5).aseprite",
+   "frame": {
+    "x": 156,
+    "y": 431,
+    "w": 158,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 132,
+    "y": 197,
+    "w": 158,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 2).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 380,
+    "w": 156,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 136,
+    "y": 144,
+    "w": 156,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 1).aseprite",
+   "frame": {
+    "x": 314,
+    "y": 431,
+    "w": 156,
+    "h": 66
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 132,
+    "y": 172,
+    "w": 156,
+    "h": 66
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 2).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 380,
+    "w": 156,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 136,
+    "y": 119,
+    "w": 156,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 1).aseprite",
+   "frame": {
+    "x": 314,
+    "y": 431,
+    "w": 156,
+    "h": 66
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 132,
+    "y": 147,
+    "w": 156,
+    "h": 66
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 2).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 380,
+    "w": 156,
+    "h": 92
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 136,
+    "y": 94,
+    "w": 156,
+    "h": 92
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 1).aseprite",
+   "frame": {
+    "x": 314,
+    "y": 431,
+    "w": 156,
+    "h": 66
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 132,
+    "y": 122,
+    "w": 156,
+    "h": 66
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (Layer 6).aseprite",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 272,
+    "h": 270
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 34,
+    "y": 13,
+    "w": 272,
+    "h": 270
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  },
+  {
+   "filename": "example (MASK).aseprite",
+   "frame": {
+    "x": 272,
+    "y": 221,
+    "w": 157,
+    "h": 210
+   },
+   "rotated": false,
+   "trimmed": true,
+   "spriteSourceSize": {
+    "x": 134,
+    "y": 73,
+    "w": 157,
+    "h": 210
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 320
+   },
+   "duration": 1000
+  }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3-rc4-arm64",
+  "image": "example.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 532,
+   "h": 514
+  },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   {
+    "name": "Layer 3",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 6",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 7",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Group 2"
+   },
+   {
+    "name": "Layer 4",
+    "group": "Group 2",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 8",
+    "group": "Group 2",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 5",
+    "group": "Group 2",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Group 1"
+   },
+   {
+    "name": "Layer 2",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 1",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Group 1"
+   },
+   {
+    "name": "Layer 2",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 1",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Group 1"
+   },
+   {
+    "name": "Layer 2",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 1",
+    "group": "Group 1",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "Layer 6",
+    "opacity": 255,
+    "blendMode": "normal"
+   },
+   {
+    "name": "MASK",
+    "opacity": 255,
+    "blendMode": "normal"
+   }
+  ],
+  "slices": [
+  ]
+ }
+}
