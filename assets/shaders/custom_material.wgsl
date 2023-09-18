@@ -21,6 +21,8 @@ fn fragment(
 ) -> @location(0) vec4<f32> {
     var base = textureSample(base_texture, base_sampler, mesh.uv);
     var mask = textureSample(mask_texture, maks_sampler, mesh.uv);
-    return base;
+//    return base;
 //    return vec4<f32>(base.xyz, (1.0 - mask.w) * base.w);
+//    return vec4<f32>(1.0,1.0,1.0,1.0);
+    return vec4<f32>(mesh.world_position.xyz,1.0);
 }

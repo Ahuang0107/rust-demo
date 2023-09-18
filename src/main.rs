@@ -23,6 +23,10 @@ fn setup_camera(
     asset_server: Res<AssetServer>,
 ) {
     c.spawn(Camera2dBundle::default());
+    c.spawn(SpriteBundle {
+        texture: asset_server.load("drawer copy.png"),
+        ..default()
+    });
     c.spawn(MaterialMesh2dBundle {
         mesh: meshes
             .add(Mesh::from(shape::Quad::new(Vec2::new(161.0, 94.0))))
