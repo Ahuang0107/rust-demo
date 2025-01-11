@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 image = { version = "0.25.5", features = ["png"] }
 imageproc = "0.25.0"
+geo = "0.29.3"
