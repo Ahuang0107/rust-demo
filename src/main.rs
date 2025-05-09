@@ -1,4 +1,6 @@
-use std::cell::RefCell;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::cell::{Ref, RefCell, RefMut};
+use std::ops::Deref;
 use std::rc::Rc;
 
 fn main() {
@@ -30,15 +32,67 @@ fn main() {
 
     println!("-----测试同时保留多个Rc的情况");
     {
-        tree.hold = Some(Rc::new(RefCell::new(TakeArea::new("Hold"))));
+        tree.hold = Some(RcRefCellWrapper::new(TakeArea::new("Hold")));
     }
     tree.display();
     println!();
+
+    let json = serde_json::to_string(&tree).unwrap();
+    println!("{json}");
+
+    let new_tree: Scene = serde_json::from_str(json.as_str()).unwrap();
+    new_tree.display();
 }
 
 #[derive(Debug)]
+struct RcRefCellWrapper<T>(Rc<RefCell<T>>);
+
+impl<T> Serialize for RcRefCellWrapper<T>
+where
+    T: Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.0.borrow().serialize(serializer)
+    }
+}
+
+impl<'de, T> Deserialize<'de> for RcRefCellWrapper<T>
+where
+    T: Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let inner_value = T::deserialize(deserializer)?;
+        Ok(RcRefCellWrapper(Rc::new(RefCell::new(inner_value))))
+    }
+}
+
+impl<T> RcRefCellWrapper<T> {
+    pub fn new(value: T) -> Self {
+        RcRefCellWrapper(Rc::new(RefCell::new(value)))
+    }
+    pub fn borrow(&self) -> Ref<'_, T> {
+        self.0.borrow()
+    }
+    pub fn borrow_mut(&self) -> RefMut<'_, T> {
+        self.0.borrow_mut()
+    }
+}
+
+impl<T> Clone for RcRefCellWrapper<T> {
+    fn clone(&self) -> Self {
+        RcRefCellWrapper(Rc::clone(&self.0))
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct Scene {
-    hold: Option<Rc<RefCell<TakeArea>>>,
+    hold: Option<RcRefCellWrapper<TakeArea>>,
     place_areas: Vec<PlaceArea>,
 }
 
@@ -53,7 +107,7 @@ impl Scene {
         self.place_areas.push(place_area);
         self
     }
-    pub fn search_take_area(&self, name: &str) -> Option<Rc<RefCell<TakeArea>>> {
+    pub fn search_take_area(&self, name: &str) -> Option<RcRefCellWrapper<TakeArea>> {
         for place_area in self.place_areas.iter() {
             if let Some(search_result) = place_area.search_take_area(name) {
                 return Some(search_result);
@@ -76,17 +130,17 @@ impl Scene {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct TakeArea {
-    name: &'static str,
+    name: String,
     data: String,
     place_areas: Vec<PlaceArea>,
 }
 
 impl TakeArea {
-    pub fn new(name: &'static str) -> Self {
+    pub fn new(name: &str) -> Self {
         Self {
-            name,
+            name: name.to_string(),
             data: String::new(),
             place_areas: Vec::new(),
         }
@@ -95,7 +149,7 @@ impl TakeArea {
         self.place_areas.push(place_area);
         self
     }
-    pub fn search_take_area(&self, name: &str) -> Option<Rc<RefCell<TakeArea>>> {
+    pub fn search_take_area(&self, name: &str) -> Option<RcRefCellWrapper<TakeArea>> {
         for place_area in self.place_areas.iter() {
             if let Some(search_result) = place_area.search_take_area(name) {
                 return Some(search_result);
@@ -112,31 +166,32 @@ impl TakeArea {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct PlaceArea {
-    name: &'static str,
+    name: String,
     data: String,
-    hold: Option<Rc<RefCell<TakeArea>>>,
-    take_areas: Vec<Rc<RefCell<TakeArea>>>,
+    #[serde(skip)]
+    hold: Option<RcRefCellWrapper<TakeArea>>,
+    take_areas: Vec<RcRefCellWrapper<TakeArea>>,
 }
 
 impl PlaceArea {
-    pub fn new(name: &'static str) -> Self {
+    pub fn new(name: &str) -> Self {
         Self {
-            name,
+            name: name.to_string(),
             data: String::new(),
             hold: None,
             take_areas: Vec::new(),
         }
     }
     pub fn with_take_area(mut self, take_area: TakeArea) -> Self {
-        self.take_areas.push(Rc::new(RefCell::new(take_area)));
+        self.take_areas.push(RcRefCellWrapper::new(take_area));
         self
     }
-    pub fn search_take_area(&self, name: &str) -> Option<Rc<RefCell<TakeArea>>> {
+    pub fn search_take_area(&self, name: &str) -> Option<RcRefCellWrapper<TakeArea>> {
         for take_area in self.take_areas.iter() {
             if take_area.borrow().name == name {
-                return Some(take_area.clone());
+                return Some(take_area.deref().clone());
             }
             if let Some(search_result) = take_area.borrow().search_take_area(name) {
                 return Some(search_result);
