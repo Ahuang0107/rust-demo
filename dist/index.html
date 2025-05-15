@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Pong with WASM</title>
+</head>
+
+<body id="wasm-example">
+<script type="module">
+    import init from "./wasm.js";
+    init().then(() => {
+      console.log("WASM Loaded");
+    });
+</script>
+<style>
+    canvas {
+      background-color: black;
+    }
+</style>
+</body>
+</html>
