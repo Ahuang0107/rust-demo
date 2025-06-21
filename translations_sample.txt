@@ -1,0 +1,317 @@
+Start|开始|開始|スタート|시작|Inicio|Démarrer|Начать
+
+Exit|退出|退出|終了|종료|Salir|Quitter|Выход
+
+Save|保存|保存|セーブ|저장|Guardar|Sauvegarder|Сохранить
+
+Load|加载|載入|ロード|불러오기|Cargar|Charger|Загрузить
+
+Play|游玩|遊玩|プレイ|플레이|Jugar|Jouer|Играть
+
+Pause|暂停|暫停|一時停止|일시 정지|Pausa|Pause|Пауза
+
+Settings|设置|設定|設定|설정|Configuración|Paramètres|Настройки
+
+Level|等级|等級|レベル|레벨|Nivel|Niveau|Уровень
+
+Health|生命值|生命值|体力|체력|Salud|Santé|Здоровье
+
+Energy|能量|能量|エネルギー|에너지|Energía|Énergie|Энергия
+
+Attack|攻击|攻擊|攻撃|공격|Ataque|Attaque|Атака
+
+Defense|防御|防禦|防御|방어|Defensa|Défense|Защита
+
+Magic|魔法|魔法|魔法|마법|Magia|Magie|Магия
+
+Skill|技能|技能|スキル|스킬|Habilidad|Compétence|Навык
+
+Quest|任务|任務|クエスト|퀘스트|Misión|Quête|Задание
+
+Item|物品|物品|アイテム|아이템|Objeto|Objet|Предмет
+
+Gold|金币|金幣|ゴールド|골드|Oro|Or|Золото
+
+Shop|商店|商店|ショップ|상점|Tienda|Boutique|Магазин
+
+Map|地图|地圖|マップ|지도|Mapa|Carte|Карта
+
+Enemy|敌人|敵人|敵|적|Enemigo|Ennemi|Враг
+
+Boss|首领|首領|ボス|보스|Jefe|Boss|Босс
+
+Victory|胜利|勝利|勝利|승리|Victoria|Victoire|Победа
+
+Defeat|失败|失敗|敗北|패배|Derrota|Défaite|Поражение
+
+Character|角色|角色|キャラクター|캐릭터|Personaje|Personnage|Персонаж
+
+Inventory|背包|背包|インベントリ|인벤토리|Inventario|Inventaire|Инвентарь
+
+Weapon|武器|武器|武器|무기|Arma|Arme|Оружие
+
+Armor|护甲|護甲|防具|방어구|Armadura|Armure|Броня
+
+Potion|药水|藥水|ポーション|포션|Poción|Potion|Зелье
+
+Key|钥匙|鑰匙|鍵|열쇠|Llave|Clé|Ключ
+
+Door|门|門|ドア|문|Puerta|Porte|Дверь
+
+Treasure|宝藏|寶藏|宝物|보물|Tesoro|Trésor|Сокровище
+
+Dungeon|地牢|地牢|ダンジョン|던전|Mazmorra|Donjon|Подземелье
+
+Village|村庄|村莊|村|마을|Aldea|Village|Деревня
+
+Castle|城堡|城堡|城|성|Castillo|Château|Замок
+
+Forest|森林|森林|森|숲|Bosque|Forêt|Лес
+
+Desert|沙漠|沙漠|砂漠|사막|Desierto|Désert|Пустыня
+
+Ocean|海洋|海洋|海|바다|Océano|Océan|Океан
+
+Mountain|山脉|山脈|山|산|Montaña|Montagne|Гора
+
+Sky|天空|天空|空|하늘|Cielo|Ciel|Небо
+
+Fire|火焰|火焰|火|불|Fuego|Feu|Огонь
+
+Water|水|水|水|물|Agua|Eau|Вода
+
+Wind|风|風|風|바람|Viento|Vent|Ветер
+
+Earth|大地|大地|土|흙|Tierra|Terre|Земля
+
+Light|光明|光明|光|빛|Luz|Lumière|Свет
+
+Dark|黑暗|黑暗|闇|어둠|Oscuridad|Ténèbres|Тьма
+
+Time|时间|時間|時間|시간|Tiempo|Temps|Время
+
+Space|空间|空間|空間|공간|Espacio|Espace|Пространство
+
+Power|力量|力量|力|힘|Poder|Pouvoir|Сила
+
+Speed|速度|速度|速度|속도|Velocidad|Vitesse|Скорость
+
+Luck|运气|運氣|運|운|Suerte|Chance|Удача
+
+Arrow|箭|箭|矢|화살|Flecha|Flèche|Стрела
+
+Banner|旗帜|旗幟|旗印|깃발|Estandarte|Bannière|Знамя
+
+Cloak|斗篷|斗篷|マント|망토|Capa|Cape|Плащ
+
+Dagger|匕首|匕首|ダガー|단검|Daga|Dague|Кинжал
+
+Elixir|灵药|靈藥|エリクサー|엘릭서|Elixir|Élixir|Эликсир
+
+Forge|锻造|鍛造|鍛冶|대장간|Forja|Forge|Кузница
+
+Goblin|哥布林|哥布林|ゴブリン|고블린|Goblin|Gobelin|Гоблин
+
+Herald|传令官|傳令官|使者|전령|Heraldo|Héraut|Глашатай
+
+Illusion|幻象|幻象|幻覚|환영|Ilusión|Illusion|Иллюзия
+
+Jester|小丑|小丑|道化師|어릿광대|Bufón|Bouffon|Шут
+
+Keystone|基石|基石|要石|중심석|Clave|Pierre angulaire|Краеугольный камень
+
+Labyrinth|迷宫|迷宮|迷路|미로|Laberinto|Labyrinthe|Лабиринт
+
+Mystic|秘术师|秘術師|神秘主義者|신비주의자|Místico|Mystique|Мистик
+
+Nexus|枢纽|樞紐|連结点|넥서스|Nexo|Nexus|Связующий
+
+Oath|誓言|誓言|誓い|서약|Juramento|Serment|Клятва
+
+Pendant|吊坠|吊墜|ペンダント|펜던트|Colgante|Pendentif|Кулон
+
+Quiver|箭袋|箭袋|矢筒|화살통|Carcaj|Carquois|Колчан
+
+Rune|符文|符文|ルーン|룬|Runa|Rune|Руна
+
+Sigil|符印|符印|印章|싸인|Sigilo|Sceau|Печать
+
+Tome|典籍|典籍|魔導書|고서|Tomo|Tome|Фолиант
+
+Urn|骨灰瓮|骨灰甕|壺|항아리|Urna|Urne|Урна
+
+Vial|小瓶|小瓶|小瓶|작은 병|Vial|Fiole|Флакон
+
+Warlock|术士|術士|ウォーロック|흑마법사|Brujo|Démoniste|Чернокнижник
+
+Yew|紫杉|紫杉|イチイ|주목|Tejo|If|Тис
+
+Zealot|狂热者|狂熱者|狂信者|광신자|Fanático|Zélote|Фанатик
+
+Altar|祭坛|祭壇|祭壇|제단|Altar|Autel|Алтарь
+
+Brew|酿造|釀造|醸造|양조|Brebaje|Breuvage|Варево
+
+Cairn|石冢|石塚|ケルン|케언|Montón de piedras|Cairn|Курган
+
+Druid|德鲁伊|德魯伊|ドルイド|드루이드|Druida|Druide|Друид
+
+Effigy|雕像|雕像|肖像|모형|Efigie|Effigie|Эффигия
+
+Frost|寒霜|寒霜|霜|서리|Escarcha|Givre|Иней
+
+Glyph|雕文|雕文|グリフ|글리프|Glifo|Glyphe|Глиф
+
+Hovel|茅屋|茅屋|小屋|오두막|Choza|Taudis|Лачуга
+
+Ire|怒火|怒火|憤怒|분노|Ira|Courroux|Гнев
+
+Jolt|震动|震動|衝撃|격동|Sacudida|Secousse|Толчок
+
+Knoll|土丘|土丘|小丘|언덕|Loma|Butte|Холмик
+
+Lich|巫妖|巫妖|リッチ|리치|Liche|Liche|Лич
+
+Maw|巨口|巨口|顎|아가리|Fauces|Gueule|Пасть
+
+Nectar|花蜜|花蜜|神酒|넥타르|Néctar|Nectar|Нектар
+
+Omen|预兆|預兆|前兆|전조|Presagio|Présage|Предзнаменование
+
+Plague|瘟疫|瘟疫|疫病|역병|Plaga|Peste|Чума
+
+Quartz|石英|石英|石英|석영|Cuarzo|Quartz|Кварц
+
+Revenant|亡魂|亡魂|レブナント|레버넌트|Espectro|Revenant|Ревенант
+
+Shroud|裹尸布|裹屍布|死装束|수의|Sudario|Linceul|Савван
+
+Tundra|冻原|凍原|ツンドラ|툰드라|Tundra|Toundra|Тундра
+
+Undead|亡灵|亡靈|アンデッド|언데드|No-muerto|Mort-vivant|Нежить
+
+Vortex|漩涡|漩渦|渦|소용돌이|Vórtice|Vortex|Вихрь
+
+Wight|尸鬼|屍鬼|ワイト|와이트|Espectro|Goule|Вайт
+
+Xeric|干旱的|乾旱的|乾燥した|건조한|Xérico|Xérique|Ксерофитный
+
+Yonder|远处的|遠處的|彼方の|저편의|Allá|Là-bas|Вон там
+
+Eldritch|诡异的|詭異的|不気味な|기괴한|Misterioso|Ésotérique|Жуткий
+
+Phylactery|命匣|命匣|フィラクタリー|필랙터리|Filacteria|Phylactère|Филактерия
+
+Zephyr|和风|和風|そよ風|산들바람|Céfiro|Zéphyr|Зефир
+
+
+
+Press Start|按下开始|按下開始|スタートを押す|시작 버튼을 누르세요|Presiona Inicio|Appuyez sur Démarrer|Нажмите Старт
+
+Game Over|游戏结束|遊戲結束|ゲームオーバー|게임 오버|Juego Terminado|Game Over|Игра Окончена
+
+Continue?|继续吗？|繼續嗎？|続けますか？|계속하시겠습니까？|¿Continuar?|Continuer?|Продолжить?
+
+New Game|新游戏|新遊戲|ニューゲーム|새 게임|Nuevo Juego|Nouvelle Partie|Новая Игра
+
+High Score|最高分|最高分|ハイスコア|최고 점수|Máxima Puntuación|Meilleur Score|Рекорд
+
+Sound On/Off|声音开/关|聲音開/關|サウンド オン/オフ|사운드 켜기/끄기|Sonido On/Off|Son On/Off|Звук Вкл/Выкл
+
+Full Screen|全屏|全螢幕|フルスクリーン|전체 화면|Pantalla Completa|Plein Écran|Полный Экран
+
+Volume Up/Down|音量增加/减少|音量增加/減少|音量 上げ/下げ|볼륨 높이기/낮추기|Subir/Bajar Volumen|Volume +/-|Громкость +/-
+
+Checkpoint Reached|到达检查点|到達檢查點|チェックポイント到達|체크포인트 도달|Punto de Control Alcanzado|Point de Contrôle Atteint|Контрольная Точка Достигнута
+
+Unlock Achievement|解锁成就|解鎖成就|実績解除|업적 해제|Logro Desbloqueado|Succès Débloqué|Достижение Разблокировано
+
+Loading...|加载中...|載入中...|ロード中...|로드 중...|Cargando...|Chargement...|Загрузка...
+
+Please Wait|请稍候|請稍候|お待ちください|잠시 기다려 주세요|Por Favor Espere|Veuillez Patienter|Пожалуйста, Подождите
+
+Connection Lost|连接丢失|連接丟失|接続切断|연결 끊김|Conexión Perdida|Connexion Perdue|Соединение Потеряно
+
+Retry?|重试？|重試？|再試行しますか？|다시 시도하시겠습니까？|¿Reintentar?|Réessayer?|Повторить?
+
+Confirm Delete|确认删除|確認刪除|削除確認|삭제 확인|Confirmar Eliminación|Confirmer la Suppression|Подтвердить Удаление
+
+Not Enough Gold|金币不足|金幣不足|ゴールド不足|골드 부족|No Hay Suficiente Oro|Or Insuffisant|Недостаточно Золота
+
+Level Up!|升级！|升級！|レベルアップ！|레벨 업！|¡Subir de Nivel!|Niveau Supérieur!|Повышение Уровня!
+
+Critical Hit!|暴击！|暴擊！|クリティカルヒット！|치명타!|¡Golpe Crítico!|Coup Critique!|Критический Удар!
+
+Out of Mana|魔力耗尽|魔力耗盡|マナ不足|마나 부족|Sin Maná|Plus de Mana|Закончилась Мана
+
+Party Full|队伍已满|隊伍已滿|パーティー満員|파티 정원 초과|Equipo Lleno|Groupe Complet|Группа Заполнена
+
+
+
+
+Welcome to the game!|欢迎来到游戏！|歡迎來到遊戲！|ゲームへようこそ！|게임에 오신 것을 환영합니다!|¡Bienvenido al juego!|Bienvenue dans le jeu!|Добро пожаловать в игру!
+
+You found a hidden treasure!|你发现了隐藏宝藏！|你發現了隱藏寶藏！|隠し宝を見つけた！|숨겨진 보물을 발견했습니다!|¡Encontraste un tesoro oculto!|Vous avez trouvé un trésor caché!|Вы нашли скрытое сокровище!
+
+The enemy is approaching!|敌人正在接近！|敵人正在接近！|敵が近づいている！|적이 접근 중입니다!|¡El enemigo se acerca!|L'ennemi approche!|Враг приближается!
+
+Your health is low.|你的生命值过低。|你的生命值過低。|体力が少ないです。|체력이 낮습니다.|Tu salud es baja.|Votre santé est faible.|У вас мало здоровья.
+
+Would you like to save?|要保存吗？|要儲存嗎？|セーブしますか？|저장하시겠습니까?|¿Quieres guardar?|Voulez-vous sauvegarder?|Хотите сохраниться?
+
+This door is locked.|这扇门锁上了。|這扇門鎖上了。|このドアは鍵がかかっている。|이 문은 잠겨 있습니다.|Esta puerta está cerrada.|Cette porte est verrouillée.|Эта дверь заперта.
+
+You need a key to open it.|你需要钥匙才能打开。|你需要鑰匙才能打開。|開けるには鍵が必要だ。|열려면 열쇠가 필요합니다.|Necesitas una llave para abrirla.|Vous avez besoin d'une clé pour l'ouvrir.|Вам нужен ключ, чтобы открыть.
+
+A mysterious voice whispers...|神秘的声音低语...|神秘的聲音低語...|謎の声が囁く...|신비로운 목소리가 속삭입니다...|Una voz misteriosa susurra...|Une voix mystérieuse murmure...|Таинственный голос шепчет...
+
+The battle begins!|战斗开始！|戰鬥開始！|戦闘開始！|전투 시작!|¡La batalla comienza!|Le combat commence!|Битва начинается!
+
+You defeated the boss!|你击败了首领！|你擊敗了首領！|ボスを倒した！|보스를 물리쳤습니다!|¡Derrotaste al jefe!|Vous avez vaincu le boss!|Вы победили босса!
+
+Critical hit! Double damage dealt!|暴击！造成双倍伤害！|暴擊！造成雙倍傷害！|クリティカルヒット！ダメージ2倍！|치명타! 2배 피해!|¡Golpe crítico! ¡Doble daño!|Coup critique ! Dégâts doublés !|Критический удар! Двойной урон!
+
+Enemy is stunned for 3 seconds.|敌人被眩晕3秒。|敵人被眩暈3秒。|敵は3秒間気絶した。|적이 3초간 기절했습니다.|El enemigo está aturdido por 3 segundos.|L'ennemi est étourdi pendant 3 secondes.|Враг оглушён на 3 секунды.
+
+Your shield blocked 80% of the damage.|你的盾牌格挡了80%伤害。|你的盾牌格擋了80%傷害。|盾でダメージの80%を防いだ。|방패로 피해의 80%를 막았습니다.|Tu escudo bloqueó el 80% del daño.|Votre bouclier a bloqué 80% des dégâts.|Ваш щит блокировал 80% урона.
+
+A hidden path reveals itself!|一条隐藏路径出现了！|一條隱藏路徑出現了！|隠し道が現れた！|숨겨진 길이 나타났습니다!|¡Un camino oculto se revela!|Un passage secret apparaît !|Скрытый путь открылся!
+
+You sense powerful magic nearby.|你感应到附近有强大魔法。|你感應到附近有強大魔法。|近くに強力な魔法を感知した。|근처에 강력한 마법이 느껴집니다.|Sientes magia poderosa cerca.|Vous sentez une magie puissante à proximité.|Вы чувствуете мощную магию рядом.
+
+New skill unlocked: Fireball!|新技能已解锁：火球术！|新技能已解鎖：火球術！|新スキル解放：ファイアボール！|새 스킬 해제: 파이어볼!|¡Nueva habilidad desbloqueada: Bola de fuego!|Nouvelle compétence débloquée : Boule de feu !|Новый навык: Огненный шар!
+
++5 Strength after training!|训练后力量+5！|訓練後力量+5！|トレーニングで筋力+5！|훈련 후 힘 +5!|¡+5 Fuerza después del entrenamiento!|+5 Force après l'entraînement !|+5 к силе после тренировки!
+
+Your reputation with the guild has improved.|你与公会的声望提升了。|你與公會的聲望提升了。|ギルドとの好感度が上がった。|길드와의 평판이 향상되었습니다.|Tu reputación con el gremio ha mejorado.|Votre réputation avec la guilde s'est améliorée.|Ваша репутация с гильдией повысилась.
+
+Auto-save complete. Press [F5] to quick load.|自动保存完成。按[F5]快速读取。|自動儲存完成。按[F5]快速讀取。|自動セーブ完了。[F5]でクイックロード。|자동 저장 완료. [F5]로 빠르게 불러오기.|Guardado automático completo. Presiona [F5] para cargar rápido.|Sauvegarde auto terminée. Appuyez sur [F5] pour charger rapidement.|Автосохранение завершено. Нажмите [F5] для быстрой загрузки.
+
+Controller disconnected. Reconnect to continue.|控制器已断开，请重新连接。|控制器已斷開，請重新連接。|コントローラーが切断されました。|컨트롤러 연결 끊김. 재연결하세요.|Controlador desconectado. Reconecta para continuar.|Manette déconnectée. Reconnectez-vous.|Контроллер отключён. Переподключите.
+
+Downloading update (72%)... Do not turn off.|正在下载更新(72%)... 请勿关闭。|正在下載更新(72%)... 請勿關閉。|更新をダウンロード中(72%)... 終了しないでください。|업데이트 다운로드 중(72%)... 종료하지 마세요.|Descargando actualización (72%)... No apagues.|Téléchargement de la mise à jour (72%)... Ne pas éteindre.|Загрузка обновления (72%)... Не выключайте.
+
+"The forest is cursed. Travel at your own risk."|“森林被诅咒了，前行需谨慎。”|「森林被詛咒了，前行需謹慎。」|「森は呪われている。行くなら自己責任で」|"숲은 저주받았습니다. 가지 마십시오."|"El bosque está maldito. Viaja bajo tu propio riesgo."|"La forêt est maudite. Aventurez-vous à vos risques et périls."|«Лес проклят. Путешествуйте на свой страх и риск.»
+
+"I'll trade you 3 herbs for a healing potion."|“用3株草药换一瓶治疗药水。”|「用3株草藥換一瓶治療藥水。」|「回復ポーションと3つの薬草を交換しよう」|"치유 물약과 약초 3개를 교환하겠습니다."|"Te cambiaré 3 hierbas por una poción de curación."|"Je t'échange 3 herbes contre une potion de soin."|«Я обменяю 3 травы на зелье лечения.»
+
+"Beware the red moon – monsters grow stronger!"|“当心红月，怪物会变强！”|「當心紅月，怪物會變強！」|「赤い月の夜は魔物が強くなるぞ！」|"붉은 달 밤에는 몬스터가 강해집니다!"|"¡Cuidado con la luna roja, los monstruos se fortalecen!"|"Méfiez-vous de la lune rouge – les monstres deviennent plus forts !"|«Бойтесь красной луны — монстры станут сильнее!»
+
+Quest updated: Find the missing blacksmith.|任务更新：寻找失踪的铁匠。|任務更新：尋找失蹤的鐵匠。|クエスト更新：行方不明の鍛冶屋を探せ。|퀘스트 업데이트: 실종된 대장장이를 찾으세요.|Misión actualizada: Encuentra al herrero desaparecido.|Quête mise à jour : Trouvez le forgeron disparu.|Задание обновлено: Найдите пропавшего кузнеца.
+
+Optional objective: Collect 10 wolf fangs.|可选目标：收集10颗狼牙。|可選目標：收集10顆狼牙。|オプション目標：狼の牙を10本集めろ。|선택 목표: 늑대 이빨 10개 수집.|Objetivo opcional: Recolecta 10 colmillos de lobo.|Objectif facultatif : Ramassez 10 crocs de loup.|Дополнительная цель: Соберите 10 волчьих клыков.
+
+Time remaining: 14 minutes 32 seconds.|剩余时间：14分32秒。|剩餘時間：14分32秒。|残り時間：14分32秒。|남은 시간: 14분 32초.|Tiempo restante: 14 minutos 32 segundos.|Temps restant : 14 minutes 32 secondes.|Осталось времени: 14 минут 32 секунды.
+
+"I used to be an adventurer like you... then I took a potato to the knee."|“我以前和你一样是个冒险者…直到我的膝盖中了一颗土豆。”|「我以前和你一樣是個冒險者…直到我的膝蓋中了一顆馬鈴薯。」|「お前のような冒険者だったが…ジャガイモを膝に受けてな」|"너 같은 모험가였는데... 무릎에 감자맞고 말았지."|"Yo también fui aventurero... hasta que una patata me golpeó la rodilla."|"J'étais un aventurier comme toi... puis j'ai pris une patate dans le genou."|«Я был авантюристом, как ты... пока не получил картошкой в колено.»
+
+"This isn't even my final form!"|“这还不是我的最终形态！”|「這還不是我的最終形態！」|「これが俺の真の姿じゃない！」|"이건 내 최종 형태가 아니야!"|"¡Esta ni siquiera es mi forma final!"|"Ce n'est même pas ma forme finale !"|«Это ещё не моя окончательная форма!»
+
+
+
+The ancient prophecy foretold that a hero would rise to save the world from darkness.|古老的预言预示一位英雄将崛起，从黑暗中拯救世界。|古老的預言預示一位英雄將崛起，從黑暗中拯救世界。|古代の予言は、英雄が現れ闇から世界を救うと告げていた。|고대의 예언은 영웅이 나타나 어둠으로부터 세상을 구할 것이라고 예고했습니다.|La antigua profecía decía que un héroe se alzaría para salvar al mundo de la oscuridad.|L'ancienne prophétie annonçait qu'un héros se lèverait pour sauver le monde des ténèbres.|Древнее пророчество гласило, что герой восстанет, чтобы спасти мир от тьмы.
+
+To unlock this ability, you must first complete the trial of courage.|要解锁此能力，你必须先完成勇气试炼。|要解鎖此能力，你必須先完成勇氣試煉。|この能力を解放するには、まず勇気の試練をクリアしなければならない。|이 능력을 해제하려면 먼저 용기의 시련을 완료해야 합니다.|Para desbloquear esta habilidad, primero debes completar la prueba de valentía.|Pour débloquer cette capacité, vous devez d'abord accomplir l'épreuve du courage.|Чтобы разблокировать эту способность, вы должны сначала пройти испытание храбрости.
+
+
+The kingdom of Eldoria was once a land of peace and prosperity, but now it lies in ruins under the rule of the Dark Sorcerer. Legends speak of a forgotten artifact hidden deep within the Crystal Caves, said to hold the power to restore balance. Will you embark on this perilous journey to reclaim the kingdom's lost glory?|埃尔多利亚王国曾是一片和平繁荣的土地，但现在它在黑暗巫师的统治下沦为废墟。传说水晶洞穴深处藏有一件被遗忘的神器，据说拥有恢复平衡的力量。你愿意踏上这段危险的旅程，夺回王国失去的荣耀吗？|埃爾多利亞王國曾是一片和平繁榮的土地，但現在它在黑暗巫師的統治下淪為廢墟。傳說水晶洞穴深處藏有一件被遺忘的神器，據說擁有恢復平衡的力量。你願意踏上這段危險的旅程，奪回王國失去的榮耀嗎？|エルドリア王国はかつて平和と繁栄の土地でしたが、今は闇の魔法使いの支配下で廃墟と化しています。伝説によると、クリスタルケイブの奥深くに忘れられた遺物が隠されており、バランスを回復する力を持つと言われています。あなたはこの危険な旅に乗り出し、王国の失われた栄光を取り戻しますか？|엘도리아 왕국은 한때 평화와 번영의 땅이었지만, 이제는 다크 소서러의 통치 아래 폐허가 되었습니다. 전설에 따르면 크리스탈 동굴 깊은 곳에 잊혀진 유물이 숨겨져 있으며, 균형을 회복할 수 있는 힘을 지니고 있다고 합니다. 왕국의 잃어버린 영광을 되찾기 위해 이 위험한 여정에 떠나시겠습니까?|El reino de Eldoria fue una vez una tierra de paz y prosperidad, pero ahora yace en ruinas bajo el gobierno del Hechicero Oscuro. Las leyendas hablan de un artefacto olvidado escondido en lo profundo de las Cuevas de Cristal, que se dice que tiene el poder de restaurar el equilibrio. ¿Te embarcarás en este peligroso viaje para reclamar la gloria perdida del reino?|Le royaume d'Eldoria était autrefois une terre de paix et de prospérité, mais il gît maintenant en ruines sous le règle du Sorcier Noir. Les légendes évoquent un artefact oublié caché au plus profond des Grottes de Cristal, qui aurait le pouvoir de rétablir l'équilibre. Vous lancerez-vous dans ce périlleux voyage pour reconquérir la gloire perdue du royaume ?|Королевство Эльдория когда-то было землей мира и процветания, но теперь оно лежит в руинах под властью Темного Колдуна. Легенды говорят о забытом артефакте, спрятанном глубоко в Хрустальных Пещерах, который, как говорят, обладает силой восстановить баланс. Отправитесь ли вы в это опасное путешествие, чтобы вернуть утраченную славу королевства?
