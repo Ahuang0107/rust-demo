@@ -3,13 +3,16 @@ use crate::event::{send_event, try_take_event, Event};
 use crate::express::Express;
 use crate::slam_club::SlamClub;
 use crate::statistics::Statistics;
+use crate::talent::{Talent, Talents};
 use eframe::egui::{
-    CentralPanel, Context, FontData, FontDefinitions, FontFamily, Label, Sense, Ui,
+    CentralPanel, Context, FontData, FontDefinitions, FontFamily, Label, ScrollArea, Sense,
+    SidePanel, Ui,
 };
 use egui_extras::{Column, TableBuilder};
 use i18n_utils::{i18n_str, set_lang, Language};
 use std::sync::Arc;
 use std::time::Duration;
+use strum::IntoEnumIterator;
 
 pub struct App {}
 
@@ -39,9 +42,10 @@ impl eframe::App for App {
         let delta = ctx.input(|i| Duration::from_secs_f32(i.stable_dt));
 
         let statistics = Statistics::single_mut();
+        let talents = Talents::single_mut();
         statistics.update(delta);
         while let Some(event) = try_take_event() {
-            println!("handle event: {:?}", event);
+            // println!("handle event: {:?}", event);
             match event {
                 Event::DamageResource(source, resource) => {
                     statistics.damage(source, resource);
@@ -53,6 +57,13 @@ impl eframe::App for App {
                     Express::single_mut().handle_upgrade(upgrade_id);
                     SlamClub::single_mut().handle_upgrade(upgrade_id);
                 }
+                Event::ChangeTalent(talent, toggle) => {
+                    if toggle {
+                        talents.toggle(talent);
+                    } else {
+                        talents.untoggle(talent);
+                    }
+                }
             }
         }
         let express = Express::single_mut();
@@ -63,8 +74,9 @@ impl eframe::App for App {
         let statistics = Statistics::single();
         let express = Express::single();
         let slam_club = SlamClub::single();
+        let talents = Talents::single();
 
-        CentralPanel::default().show(ctx, |ui| {
+        SidePanel::left("left_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("English").clicked() {
                     set_lang(Language::en);
@@ -96,9 +108,20 @@ impl eframe::App for App {
                     }
                 }
             });
-
-            ui.separator();
-
+        });
+        SidePanel::right("right_panel").show(ctx, |ui| {
+            ScrollArea::vertical().show(ui, |ui| {
+                for talent in Talent::iter() {
+                    let old_toggle = talents.if_toggle(talent);
+                    let mut toggle = old_toggle;
+                    ui.checkbox(&mut toggle, talent.sc());
+                    if toggle != old_toggle {
+                        send_event(Event::ChangeTalent(talent, toggle));
+                    }
+                }
+            })
+        });
+        CentralPanel::default().show(ctx, |ui| {
             building_ui(ui, express);
 
             ui.separator();

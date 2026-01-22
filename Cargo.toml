@@ -9,4 +9,6 @@ edition = "2021"
 eframe = { version = "0.33.3", features = [] }
 egui_extras = { version = "0.33.3", features = [] }
 rand = "0.9.2"
+strum = "0.27.1"
+strum_macros = "0.27.1"
 i18n_utils = { path = "../i18n_utils" }
