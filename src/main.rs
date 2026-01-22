@@ -4,6 +4,7 @@ mod event;
 mod express;
 mod monitor;
 mod resource;
+mod singleton;
 mod slam_club;
 mod statistics;
 mod talent;

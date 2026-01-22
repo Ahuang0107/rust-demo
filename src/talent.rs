@@ -1,7 +1,8 @@
+use crate::singleton;
 use i18n_utils::I18n;
 use strum_macros::EnumIter;
 
-static mut TALENTS: Talents = Talents::new();
+singleton!(Talents = Talents::new());
 
 #[derive(Debug)]
 pub struct Talents {
@@ -9,20 +10,6 @@ pub struct Talents {
 }
 
 impl Talents {
-    #[inline]
-    pub const fn single() -> &'static Talents {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &TALENTS
-        }
-    }
-    #[inline]
-    pub const fn single_mut() -> &'static mut Talents {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &mut TALENTS
-        }
-    }
     #[inline]
     pub const fn new() -> Talents {
         Self { toggled: vec![] }

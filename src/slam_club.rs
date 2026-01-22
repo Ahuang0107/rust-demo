@@ -3,12 +3,13 @@ use crate::common::*;
 use crate::event::{send_event, Event};
 use crate::monitor::ShardsSource;
 use crate::resource::Resource;
+use crate::singleton;
 use crate::talent::{Talent, Talents};
 use i18n_utils::i18n_str;
 use std::ops::RangeInclusive;
 use std::time::Duration;
 
-static mut SLAM_CLUB: SlamClub = SlamClub::new();
+singleton!(SlamClub = SlamClub::new());
 
 #[derive(Debug)]
 pub struct SlamClub {
@@ -73,20 +74,6 @@ impl Slammer {
 }
 
 impl SlamClub {
-    #[inline]
-    pub const fn single() -> &'static SlamClub {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &SLAM_CLUB
-        }
-    }
-    #[inline]
-    pub const fn single_mut() -> &'static mut SlamClub {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &mut SLAM_CLUB
-        }
-    }
     pub const fn new() -> Self {
         Self {
             elapsed: Duration::ZERO,

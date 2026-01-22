@@ -1,8 +1,9 @@
 use crate::monitor::{Monitor, ShardsSource};
 use crate::resource::Resource;
+use crate::singleton;
 use std::time::Duration;
 
-static mut STATISTICS: Statistics = Statistics::new();
+singleton!(Statistics = Statistics::new());
 
 #[derive(Debug)]
 pub struct Statistics {
@@ -11,20 +12,6 @@ pub struct Statistics {
 }
 
 impl Statistics {
-    #[inline]
-    pub const fn single() -> &'static Statistics {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &STATISTICS
-        }
-    }
-    #[inline]
-    pub const fn single_mut() -> &'static mut Statistics {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &mut STATISTICS
-        }
-    }
     pub const fn new() -> Self {
         Self {
             resource: Resource::new(),

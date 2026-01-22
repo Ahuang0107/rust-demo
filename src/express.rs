@@ -3,10 +3,11 @@ use crate::common::*;
 use crate::event::{send_event, Event};
 use crate::monitor::ShardsSource;
 use crate::resource::Resource;
+use crate::singleton;
 use i18n_utils::{i18n_str, i18n_string};
 use std::time::Duration;
 
-static mut EXPRESS: Express = Express::new();
+singleton!(Express = Express::new());
 
 #[derive(Debug)]
 pub struct Express {
@@ -21,20 +22,6 @@ pub struct Express {
 }
 
 impl Express {
-    #[inline]
-    pub const fn single() -> &'static Express {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &EXPRESS
-        }
-    }
-    #[inline]
-    pub const fn single_mut() -> &'static mut Express {
-        #[allow(static_mut_refs)]
-        unsafe {
-            &mut EXPRESS
-        }
-    }
     pub const fn new() -> Self {
         Self {
             elapsed: Duration::ZERO,
