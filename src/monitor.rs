@@ -125,26 +125,3 @@ impl std::ops::AddAssign<(ResourceSource, Resource)> for EachResource {
         self.push(rhs);
     }
 }
-
-impl std::ops::SubAssign<(ResourceSource, Resource)> for EachResource {
-    fn sub_assign(&mut self, rhs: (ResourceSource, Resource)) {
-        for (source, value) in self.iter_mut() {
-            if *source == rhs.0 {
-                *value -= rhs.1;
-                return;
-            }
-        }
-        self.push((rhs.0, -rhs.1));
-    }
-}
-
-impl std::ops::Div<i32> for EachResource {
-    type Output = EachResource;
-    fn div(mut self, rhs: i32) -> Self::Output {
-        for (_, value) in self.iter_mut() {
-            *value /= rhs;
-        }
-
-        self
-    }
-}

@@ -71,30 +71,3 @@ impl std::ops::AddAssign for Resource {
         self.zybelliums += rhs.zybelliums;
     }
 }
-
-impl std::ops::SubAssign for Resource {
-    fn sub_assign(&mut self, rhs: Self) {
-        self.shards -= rhs.shards;
-        self.gnorps -= rhs.gnorps;
-        self.zybelliums -= rhs.zybelliums;
-    }
-}
-
-impl std::ops::Neg for Resource {
-    type Output = Resource;
-
-    fn neg(mut self) -> Self::Output {
-        self.shards = -self.shards;
-        self.gnorps = -self.gnorps;
-        self.zybelliums = -self.zybelliums;
-        self
-    }
-}
-
-impl std::ops::DivAssign<i32> for Resource {
-    fn div_assign(&mut self, rhs: i32) {
-        self.shards /= rhs;
-        self.gnorps /= rhs;
-        self.zybelliums /= rhs;
-    }
-}
