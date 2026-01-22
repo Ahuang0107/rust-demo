@@ -2,9 +2,9 @@ use crate::common::format_scale_number;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Resource {
-    pub shards: i32,
-    pub gnorps: i32,
-    pub zybelliums: i32,
+    pub shards: u64,
+    pub gnorps: u16,
+    pub zybelliums: u8,
 }
 
 impl Resource {
@@ -15,29 +15,26 @@ impl Resource {
             zybelliums: 0,
         }
     }
-    pub const fn shards(v: i32) -> Self {
+    pub const fn shards(v: u64) -> Self {
         Self {
             shards: v,
             gnorps: 0,
             zybelliums: 0,
         }
     }
-    pub const fn gnorps(v: i32) -> Self {
+    pub const fn gnorps(v: u16) -> Self {
         Self {
             shards: 0,
             gnorps: v,
             zybelliums: 0,
         }
     }
-    pub const fn zybelliums(v: i32) -> Self {
+    pub const fn zybelliums(v: u8) -> Self {
         Self {
             shards: 0,
             gnorps: 0,
             zybelliums: v,
         }
-    }
-    pub fn if_max(&self) -> bool {
-        self.shards < 0 || self.gnorps < 0 || self.zybelliums < 0
     }
     pub fn if_empty(&self) -> bool {
         self.shards == 0 && self.gnorps == 0 && self.zybelliums == 0

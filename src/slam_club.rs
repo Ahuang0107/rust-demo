@@ -1,7 +1,7 @@
 use crate::common::UpgradeId::*;
 use crate::common::*;
 use crate::event::{send_event, Event};
-use crate::monitor::ResourceSource;
+use crate::monitor::ShardsSource;
 use crate::resource::Resource;
 use crate::talent::{Talent, Talents};
 use i18n_utils::i18n_str;
@@ -67,10 +67,7 @@ impl Slammer {
         self.elapsed += delta;
         while self.elapsed > Duration::from_millis(500) {
             self.elapsed -= Duration::from_millis(500);
-            send_event(Event::DamageResource(
-                ResourceSource::Slammer,
-                Resource::shards(self.damage() as i32),
-            ));
+            send_event(Event::DamageResource(ShardsSource::Slammer, self.damage()));
         }
     }
 }
@@ -161,7 +158,7 @@ impl Building for SlamClub {
                 6 => 143_000,
                 7 => 584_000,
                 8 => 2_400_000,
-                _ => -1,
+                _ => 0,
             }),
         });
         op(UpgradeOption {
@@ -176,7 +173,7 @@ impl Building for SlamClub {
                 1 => 164,
                 3 => 720,
                 4 => 2_400,
-                _ => -1,
+                _ => 0,
             }),
         });
         op(UpgradeOption {

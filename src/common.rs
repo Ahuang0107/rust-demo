@@ -66,6 +66,7 @@ pub struct UpgradeOption {
     pub name: String,
     pub description: String,
     pub value: UpgradeValue,
+    /// 当 price 为 0 时，并且 value.level 不是 0 时，就表示已经升级到最大值了
     pub price: Resource,
 }
 

@@ -1,7 +1,7 @@
 use crate::common::UpgradeId::*;
 use crate::common::*;
 use crate::event::{send_event, Event};
-use crate::monitor::ResourceSource;
+use crate::monitor::ShardsSource;
 use crate::resource::Resource;
 use i18n_utils::{i18n_str, i18n_string};
 use std::time::Duration;
@@ -79,8 +79,8 @@ impl Building for Express {
         while self.elapsed > Duration::from_millis(500) {
             self.elapsed -= Duration::from_millis(500);
             send_event(Event::CollectResource(
-                ResourceSource::Runner,
-                Resource::shards(rand::random_range(1..10)),
+                ShardsSource::Runner,
+                rand::random_range(1..10),
             ));
         }
     }
@@ -106,7 +106,7 @@ impl Building for Express {
                 "跑腿糯米只能搬运1S，但是这个升级会增加容量\n\n- 增加1S搬运容量",
             ),
             value: self.capacity,
-            price: Resource::shards((10.0 + 21.0 * 1.45_f32.powi(self.capacity.level)) as i32),
+            price: Resource::shards((10.0 + 21.0 * 1.45_f32.powi(self.capacity.level)) as u64),
         });
         op(UpgradeOption {
             id: EX_Speed,
@@ -118,7 +118,7 @@ impl Building for Express {
             price: Resource::shards(match self.speed.level {
                 0 => 166,
                 1 => 166666,
-                _ => -1,
+                _ => 0,
             }),
         });
         op(UpgradeOption {
@@ -131,7 +131,7 @@ impl Building for Express {
             price: Resource::shards(match self.geet_protocol.level {
                 0 => 5000,
                 1 => 16000,
-                _ => -1,
+                _ => 0,
             }),
         });
     }

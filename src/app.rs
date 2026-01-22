@@ -95,16 +95,16 @@ impl eframe::App for App {
             ui.horizontal(|ui| {
                 ui.label("Damage:");
                 for (source, value) in statistics.monitor.last_damage.iter() {
-                    if !value.if_empty() {
-                        ui.label(format!("{source:?}: {} /s", value.ui_string()));
+                    if *value != 0 {
+                        ui.label(format!("{source:?}: {value} shards/min"));
                     }
                 }
             });
             ui.horizontal(|ui| {
                 ui.label("Collect:");
                 for (source, value) in statistics.monitor.last_collect.iter() {
-                    if !value.if_empty() {
-                        ui.label(format!("{source:?}: {} /s", value.ui_string()));
+                    if *value != 0 {
+                        ui.label(format!("{source:?}: {value} shards/min"));
                     }
                 }
             });
@@ -160,7 +160,8 @@ fn building_ui<B: Building>(ui: &mut Ui, b: &B) {
                                     .selectable(false),
                             );
                         } else {
-                            if u.price.if_max() {
+                            // 当 price 为 0 时，并且 value.level 不是 0 时，就表示已经升级到最大值了
+                            if u.value.level > 0 && u.price.if_empty() {
                                 ui.add(
                                     Label::new(i18n_str!(en=>"Max",sc=>"最大值")).selectable(false),
                                 );

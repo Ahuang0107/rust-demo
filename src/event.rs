@@ -1,6 +1,5 @@
 use crate::common::UpgradeId;
-use crate::monitor::ResourceSource;
-use crate::resource::Resource;
+use crate::monitor::ShardsSource;
 use crate::talent::Talent;
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -8,8 +7,8 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 #[derive(Debug)]
 pub enum Event {
-    DamageResource(ResourceSource, Resource),
-    CollectResource(ResourceSource, Resource),
+    DamageResource(ShardsSource, u32),
+    CollectResource(ShardsSource, u32),
     Upgrade(UpgradeId),
     ChangeTalent(Talent, bool),
 }

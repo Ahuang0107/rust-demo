@@ -1,4 +1,4 @@
-use crate::monitor::{Monitor, ResourceSource};
+use crate::monitor::{Monitor, ShardsSource};
 use crate::resource::Resource;
 use std::time::Duration;
 
@@ -34,11 +34,11 @@ impl Statistics {
     pub fn update(&mut self, delta: Duration) {
         self.monitor.update(delta);
     }
-    pub fn damage(&mut self, source_key: ResourceSource, resource_value: Resource) {
+    pub fn damage(&mut self, source_key: ShardsSource, resource_value: u32) {
         self.monitor.damage(source_key, resource_value);
     }
-    pub fn collect(&mut self, source_key: ResourceSource, resource_value: Resource) {
-        self.resource += resource_value;
+    pub fn collect(&mut self, source_key: ShardsSource, resource_value: u32) {
+        self.resource.shards += resource_value as u64;
         self.monitor.collect(source_key, resource_value);
     }
 }
