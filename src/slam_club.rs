@@ -1,10 +1,16 @@
+use crate::common::UpgradeId::*;
 use crate::common::*;
-use i18n_utils::i18n_string;
+use crate::event::{send_event, Event};
+use crate::monitor::ResourceSource;
+use crate::resource::Resource;
+use i18n_utils::i18n_str;
+use std::time::Duration;
 
 static mut SLAM_CLUB: SlamClub = SlamClub::new();
 
 #[derive(Debug)]
 pub struct SlamClub {
+    elapsed: Duration,
     pub slammers: Vec<()>,
     pub warmup: UpgradeValue,
     pub combo_chance: UpgradeValue,
@@ -30,6 +36,7 @@ impl SlamClub {
     }
     pub const fn new() -> Self {
         Self {
+            elapsed: Duration::ZERO,
             slammers: vec![],
             warmup: UpgradeValue::multi(),
             combo_chance: UpgradeValue::multi(),
@@ -38,19 +45,42 @@ impl SlamClub {
             meditation: UpgradeValue::once(),
         }
     }
-    pub fn upgrade_options(&self, mut op: impl FnMut(UpgradeOption)) {
+}
+
+impl Building for SlamClub {
+    fn name(&self) -> &'static str {
+        i18n_str!(en=>"Slam Club",sc=>"搏击俱乐部")
+    }
+    fn handle_upgrade(&mut self, upgrade_id: UpgradeId) {
+        match upgrade_id {
+            SC_Slammer => {
+                self.slammers.push(());
+            }
+            SC_Warmup => self.warmup.level_up(),
+            SC_ComboChance => self.combo_chance.level_up(),
+            SC_ComboPower => self.combo_power.acquire(),
+            SC_FireBreath => self.fire_breath.acquire(),
+            SC_Meditation => self.meditation.acquire(),
+            _ => {}
+        }
+    }
+
+    fn update(&mut self, delta: Duration) {
+        self.elapsed += delta;
+        while self.elapsed > Duration::from_millis(500) {
+            self.elapsed -= Duration::from_millis(500);
+            send_event(Event::DamageResource(
+                ResourceSource::Slammer,
+                Resource::shards(rand::random_range(1..10)),
+            ));
+        }
+    }
+
+    fn upgrade_options(&self, mut op: impl FnMut(UpgradeOption)) {
         op(UpgradeOption {
-            id: UpgradeId::SC_Slammer,
-            name: i18n_string!(
-                en=>String::from("Slammer"),
-                sc=>String::from("铁头糯米"),
-            ),
-            description: i18n_string!(
-                en=>String::from("Buy!\
-                Slammers use their head - they understand that without pain, there can be no gain."),
-                sc=>String::from("购买！\
-                铁头糯米喜欢用脑袋，它们明白没有痛苦就没有收获。")
-            ),
+            id: SC_Slammer,
+            name: String::from("铁头糯米"),
+            description: String::from("铁头糯米喜欢用脑袋，它们明白没有痛苦就没有收获。"),
             value: UpgradeValue::gnorps(self.slammers.len()),
             price: Resource::gnorps(1),
         });
