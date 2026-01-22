@@ -10,20 +10,24 @@ pub struct Monitor {
     elapsed: Duration,
     damage_history: VecDeque<EachShards>,
     collection_history: VecDeque<EachShards>,
-    pub last_damage: EachShards,
-    pub last_collect: EachShards,
+    pub last_1min_damage: EachShards,
+    pub last_5sec_damage: EachShards,
+    pub last_1min_collect: EachShards,
+    pub last_5sec_collect: EachShards,
 }
 
 impl Monitor {
     pub const fn new() -> Self {
         Self {
             window_size: Duration::from_secs(60),
-            record_frequency: Duration::from_millis(1000),
+            record_frequency: Duration::from_secs(1),
             elapsed: Duration::ZERO,
             damage_history: VecDeque::new(),
             collection_history: VecDeque::new(),
-            last_damage: EachShards::new(),
-            last_collect: EachShards::new(),
+            last_1min_damage: EachShards::new(),
+            last_5sec_damage: EachShards::new(),
+            last_1min_collect: EachShards::new(),
+            last_5sec_collect: EachShards::new(),
         }
     }
     fn record_len(&self) -> usize {
@@ -39,32 +43,38 @@ impl Monitor {
             changed = true;
         }
         if changed {
-            let record_len = self.record_len() + 2;
+            let record_len = self.record_len() + 1;
             while self.damage_history.len() > record_len {
                 self.damage_history.pop_front();
             }
             while self.collection_history.len() > record_len {
                 self.collection_history.pop_front();
             }
-            self.last_damage = self.statistics(&self.damage_history);
-            self.last_collect = self.statistics(&self.collection_history);
+            (self.last_1min_damage, self.last_5sec_damage) = self.statistics(&self.damage_history);
+            (self.last_1min_collect, self.last_5sec_collect) =
+                self.statistics(&self.collection_history);
         }
     }
-    fn statistics(&self, history: &VecDeque<EachShards>) -> EachShards {
-        let mut statistics = EachShards::new();
-        let record_len = self.record_len();
-        let mut index = 0;
+    fn statistics(&self, history: &VecDeque<EachShards>) -> (EachShards, EachShards) {
+        let mut last_1min_statistics = EachShards::new();
+        let mut last_5sec_statistics = EachShards::new();
         // 永远只从最近第二次记录的数据开始往前统计，因为最近一次的数据，可能才刚开始统计，为 0
+        // NOTE 注意，一分钟的窗口时间，是比较长的，是没办法及时地反应当前变化的
+        //  如果在原本汇总值稳定的情况下，先上调参数，看到汇总值上升一点后，马上恢复参数，此时汇总值是不会下降的，这个变化要等到1分钟之后才会反应在汇总值上
+        //  所以最好分别提供 5s 和 1min 两个维度的数据
+        let mut sec_index = 0;
         for history in history.iter().rev().skip(1) {
-            if index >= record_len {
-                break;
-            }
             for item in history.iter() {
-                statistics += *item;
+                last_1min_statistics += *item;
             }
-            index += 1;
+            if sec_index < 5 {
+                for item in history.iter() {
+                    last_5sec_statistics += *item;
+                }
+            }
+            sec_index += 1;
         }
-        statistics
+        (last_1min_statistics, last_5sec_statistics)
     }
     pub fn damage(&mut self, source_key: ShardsSource, resource_value: u32) {
         let length = self.damage_history.len();

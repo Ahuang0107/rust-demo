@@ -92,22 +92,29 @@ impl eframe::App for App {
 
             ui.separator();
 
-            ui.horizontal(|ui| {
-                ui.label("Damage:");
-                for (source, value) in statistics.monitor.last_damage.iter() {
-                    if *value != 0 {
-                        ui.label(format!("{source:?}: {value} shards/min"));
-                    }
+            ui.heading("Monitor");
+            ui.label("Damage:");
+            for (source, value) in statistics.monitor.last_1min_damage.iter() {
+                if *value != 0 {
+                    ui.label(format!("{source:?}: {value} shards/min"));
                 }
-            });
-            ui.horizontal(|ui| {
-                ui.label("Collect:");
-                for (source, value) in statistics.monitor.last_collect.iter() {
-                    if *value != 0 {
-                        ui.label(format!("{source:?}: {value} shards/min"));
-                    }
+            }
+            for (source, value) in statistics.monitor.last_5sec_damage.iter() {
+                if *value != 0 {
+                    ui.label(format!("{source:?}: {value} shards/5sec"));
                 }
-            });
+            }
+            ui.label("Collect:");
+            for (source, value) in statistics.monitor.last_1min_collect.iter() {
+                if *value != 0 {
+                    ui.label(format!("{source:?}: {value} shards/min"));
+                }
+            }
+            for (source, value) in statistics.monitor.last_5sec_collect.iter() {
+                if *value != 0 {
+                    ui.label(format!("{source:?}: {value} shards/5sec"));
+                }
+            }
         });
         SidePanel::right("right_panel").show(ctx, |ui| {
             ScrollArea::vertical().show(ui, |ui| {
