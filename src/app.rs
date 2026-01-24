@@ -4,6 +4,10 @@ use crate::express::Express;
 use crate::slam_club::SlamClub;
 use crate::statistics::Statistics;
 use crate::talent::{Talent, Talents};
+use bevy_inspector_egui::inspector_options::InspectorOptions;
+use bevy_inspector_egui::inspector_options::ReflectInspectorOptions;
+use bevy_inspector_egui::reflect_inspector::InspectorUi;
+use bevy_reflect::{Reflect, TypeRegistry};
 use eframe::egui::{
     CentralPanel, Context, FontData, FontDefinitions, FontFamily, Label, ScrollArea, Sense,
     SidePanel, Ui,
@@ -14,7 +18,32 @@ use std::sync::Arc;
 use std::time::Duration;
 use strum::IntoEnumIterator;
 
-pub struct App {}
+pub struct App {
+    type_registry: TypeRegistry,
+    inspector_context: bevy_inspector_egui::reflect_inspector::Context<'static>,
+    arg: Arg,
+}
+
+#[derive(Debug, Reflect, InspectorOptions, Default)]
+#[reflect(InspectorOptions)]
+pub struct Arg {
+    // 这里底层的实现在 inspector_options/std_options NumberOptions 中，没有为 Duration 提供实现
+    // 以及具体渲染的逻辑，为什么 Duration 默认显示这样，在 inspector_egui_impls/std_impls impl InspectorPrimitive for Duration
+    #[inspector(min = 0.0, max = 10.0)]
+    speed: f32,
+    interval: Duration,
+    range: std::ops::Range<i32>,
+}
+
+impl Arg {
+    pub fn new() -> Self {
+        Self {
+            speed: 5.0,
+            interval: Duration::from_millis(100),
+            range: 12..16,
+        }
+    }
+}
 
 impl App {
     pub fn new(cc: &eframe::CreationContext) -> Self {
@@ -33,7 +62,23 @@ impl App {
         );
         ctx.set_fonts(fonts);
 
-        Self {}
+        let mut type_registry = TypeRegistry::new();
+        type_registry.register::<core::ops::Range<i32>>();
+        type_registry.register::<core::ops::Range<f32>>();
+        type_registry.register::<core::any::TypeId>();
+        type_registry.register::<std::borrow::Cow<str>>();
+        type_registry.register::<std::time::Duration>();
+        type_registry.register::<std::time::Instant>();
+        bevy_inspector_egui::inspector_egui_impls::register_std_impls(&mut type_registry);
+        type_registry.register_type_data::<std::ops::Range<i32>, bevy_inspector_egui::inspector_egui_impls::InspectorEguiImpl>();
+        type_registry.register::<Arg>();
+        let inspector_context = bevy_inspector_egui::reflect_inspector::Context::default();
+
+        Self {
+            type_registry,
+            inspector_context,
+            arg: Arg::new(),
+        }
     }
 }
 
@@ -76,6 +121,9 @@ impl eframe::App for App {
         let slam_club = SlamClub::single();
         let talents = Talents::single();
 
+        let mut inspector_ui =
+            InspectorUi::new_no_short_circuit(&self.type_registry, &mut self.inspector_context);
+
         SidePanel::left("left_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 if ui.button("English").clicked() {
@@ -85,6 +133,8 @@ impl eframe::App for App {
                     set_lang(Language::sc);
                 }
             });
+
+            inspector_ui.ui_for_reflect(&mut self.arg, ui);
 
             ui.horizontal(|ui| {
                 ui.label(&format!("Resource: {}", statistics.resource.ui_string()));
